@@ -8,9 +8,11 @@ RSpec.describe Piece do
       it 'creates a piece with a color' do
         expect(piece.color).to eq(:white)
       end
+
       it 'creates a piece with a type' do
         expect(piece.type).to eq(:knight)
       end
+
       it 'creates a piece with a position' do
         expect(piece.position).to eq([0, 1])
       end
