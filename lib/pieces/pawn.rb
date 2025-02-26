@@ -1,41 +1,41 @@
 require_relative '../piece'
 
 class Pawn < Piece
-  INITIAL_WHITE_PAWN_MOVES = [[1, 0], [2, 0]].freeze
-  WHITE_PAWN_MOVES = [[1, 0]].freeze
-  WHITE_PAWN_CAPTURES = [[1, 1], [1, -1]].freeze
-
-  INITIAL_BLACK_PAWN_MOVES = [[-1, 0], [-2, 0]].freeze
-  BLACK_PAWN_MOVES = [[-1, 0]].freeze
-  BLACK_PAWN_CAPTURES = [[-1, 1], [-1, -1]].freeze
+  MOVES = { initial: [[1, 0], [2, 0]], regular: [[1, 0]], captures: [[1, 1], [1, -1]] }.freeze
+  WHITE_DIRECTION = 1
+  BLACK_DIRECTION = -1
 
   def initialize(color, board)
     super(:pawn, color, board)
-  end
-
-  def find_moves(position)
-    possible_moves(position)
+    @direction = color == :white ? WHITE_DIRECTION : BLACK_DIRECTION
   end
 
   def pawn_moves(position)
-    if color == :white
-      return INITIAL_WHITE_PAWN_MOVES if on_starting_row?(position)
-      WHITE_PAWN_MOVES
+    if on_starting_row?(position)
+      MOVES[:initial].map { |dx, dy| [dx * @direction, dy] }
     else
-      return INITIAL_BLACK_PAWN_MOVES if on_starting_row?(position)
-      BLACK_PAWN_MOVES
+      MOVES[:regular].map { |dx, dy| [dx * @direction, dy] }
     end
   end
 
   def pawn_captures
-    color == :white ? WHITE_PAWN_CAPTURES : BLACK_PAWN_CAPTURES
+    MOVES[:captures].map { |dx, dy| [dx * @direction, dy] }
   end
 
   def on_starting_row?(position)
     (color == :white && position[0] == 1) || (color == :black && position[0] == 6)
   end
 
-  def possible_moves(position)
+  def find_moves(position)
+    moves = []
+    moves.concat(pawn_regular_moves(position))
+    moves.concat(pawn_capture_moves(position))
+    moves
+  end
+
+  private
+
+  def pawn_regular_moves(position)
     x, y = position
     moves = []
 
@@ -45,12 +45,17 @@ class Pawn < Piece
       moves << [new_x, new_y] if on_board?(new_x, new_y) && @board.empty?(new_x, new_y)
     end
 
+    moves
+  end
+
+  def pawn_capture_moves(position)
+    x, y = position
+    moves = []
+
     pawn_captures.each do |(dx, dy)|
       new_x = x + dx
       new_y = y + dy
-      if on_board?(new_x, new_y) && @board.enemy_piece?(new_x, new_y, color)
-        moves << [new_x, new_y]
-      end
+      moves << [new_x, new_y] if on_board?(new_x, new_y) && @board.enemy_piece?(new_x, new_y, color)
     end
 
     moves
