@@ -1,8 +1,14 @@
+require 'spec_helper'
 require_relative '../lib/piece'
+require_relative '../lib/board'
 
 RSpec.describe Piece do
   let(:board) { Board.new }
-  let(:piece) { Piece.new(:knight, :white, [0, 1], board) }
+  let(:piece) { Piece.new(:knight, :white, board) }
+
+  before do
+    board.place_piece(piece, [0, 1])
+  end
 
   describe '#initialize' do
     context 'when it creates a piece' do
@@ -12,10 +18,6 @@ RSpec.describe Piece do
 
       it 'creates a piece with a type' do
         expect(piece.type).to eq(:knight)
-      end
-
-      it 'creates a piece with a position' do
-        expect(piece.position).to eq([0, 1])
       end
     end
   end

@@ -6,8 +6,8 @@ class Knight < Piece
     [1, 2], [1, -2], [-1, 2], [-1, -2]
   ].freeze
 
-  def initialize(color, start_position, board)
-    super(:knight, color, start_position, board)
+  def initialize(color, board)
+    super(:knight, color, board)
   end
 
   def find_moves(start)

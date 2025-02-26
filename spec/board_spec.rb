@@ -1,3 +1,4 @@
+require 'spec_helper'
 require_relative '../lib/board'
 
 RSpec.describe Board do
@@ -7,8 +8,23 @@ RSpec.describe Board do
     it 'creates a 8x8 board' do
       expect(board.board.count).to eq(8)
     end
-    it 'creates a 8x8 board with all elements initialized to 0' do
-      expect(board.board.flatten.all? { |cell| cell == 0 }).to be true
+    it 'creates a 8x8 board with all elements initialized to nil' do
+      expect(board.board.flatten.all?(&:nil?)).to be true
+    end
+  end
+
+  describe '#place_piece' do
+    it 'places a piece on the board' do
+      board.place_piece(Piece.new(:pawn, :white, board), [0, 0])
+      expect(board.board[0][0]).to be_a(Piece)
+    end
+  end
+
+  describe '#remove_piece' do
+    it 'removes a piece from the board' do
+      board.place_piece(Piece.new(:pawn, :white, board), [0, 0])
+      board.remove_piece(0, 0)
+      expect(board.board[0][0]).to be_nil
     end
   end
 end
