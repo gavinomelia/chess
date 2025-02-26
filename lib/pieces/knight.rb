@@ -17,11 +17,7 @@ class Knight < Piece
     KNIGHT_MOVES.each_with_object([]) do |(dx, dy), moves|
       new_x = x + dx
       new_y = y + dy
-      moves << [new_x, new_y] if valid_move?(new_x, new_y)
+      moves << [new_x, new_y] if on_board?(new_x, new_y)
     end
-  end
-
-  def valid_move?(x, y)
-    x.between?(0, 7) && y.between?(0, 7)
   end
 end
