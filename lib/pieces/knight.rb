@@ -8,7 +8,7 @@ class Knight < Piece
     super(:knight, color, start_position)
   end
 
-  def find_knight_moves(start)
+  def find_moves(start)
     possible_moves(start)
   end
 

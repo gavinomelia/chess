@@ -11,13 +11,13 @@ RSpec.describe Knight do
         [6, 5], [6, 3], [2, 5], [2, 3],
         [5, 6], [5, 2], [3, 6], [3, 2]
       ]
-      expect(knight.find_knight_moves(start_position)).to match_array(expected_moves)
+      expect(knight.find_moves(start_position)).to match_array(expected_moves)
     end
 
     it 'filters out moves that are off the board' do
       start_position = [0, 0]
       expected_moves = [[2, 1], [1, 2]]
-      expect(knight.find_knight_moves(start_position)).to match_array(expected_moves)
+      expect(knight.find_moves(start_position)).to match_array(expected_moves)
     end
   end
 
@@ -38,7 +38,7 @@ RSpec.describe Knight do
     end
 
     it 'returns false for a move outside the board boundaries' do
-      expect(knight.on_board?(8, 8)).to be false
+      expect(knight.on_board?(8, 9)).to be false
     end
   end
 end

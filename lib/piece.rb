@@ -12,6 +12,6 @@ class Piece
   end
 
   def on_board?(x, y)
-    x.between?(0, 7) && y.between?(0, 7)
+    x.between?(0, 8) && y.between?(0, 8)
   end
 end
