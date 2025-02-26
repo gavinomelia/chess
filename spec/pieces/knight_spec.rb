@@ -1,8 +1,10 @@
 require 'rspec'
 require_relative '../../lib/pieces/knight'
+require_relative '../../lib/board'
 
 RSpec.describe Knight do
-  let(:knight) { Knight.new(:white, [0, 0]) }
+  let(:board) { Board.new }
+  let(:knight) { Knight.new(:white, [0, 0], board) }
 
   describe '#find_knight_moves' do
     it 'returns all valid knight moves from a given position' do

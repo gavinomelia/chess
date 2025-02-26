@@ -1,9 +1,11 @@
 require 'rspec'
 require_relative '../../lib/pieces/pawn'
+require_relative '../../lib/board'
 
 RSpec.describe Pawn do
-  let(:white_pawn) { Pawn.new(:white, [1, 0]) }
-  let(:black_pawn) { Pawn.new(:black, [6, 0]) }
+  let(:board) { Board.new }
+  let(:white_pawn) { Pawn.new(:white, [1, 0], board) }
+  let(:black_pawn) { Pawn.new(:black, [6, 0], board) }
 
   describe '#initialize' do
     it 'creates a white pawn' do
@@ -41,8 +43,8 @@ RSpec.describe Pawn do
     end
 
     context 'when on starting row' do
-      let(:white_pawn) { Pawn.new(:white, [1, 0]) }
-      let(:black_pawn) { Pawn.new(:black, [6, 0]) }
+      let(:white_pawn) { Pawn.new(:white, [1, 0], board) }
+      let(:black_pawn) { Pawn.new(:black, [6, 0], board) }
       it 'returns two moves for a white' do
         expect(white_pawn.on_starting_row?).to be true
         expect(white_pawn.pawn_moves).to eq([[1, 0], [2, 0]])
@@ -55,8 +57,9 @@ RSpec.describe Pawn do
     end
 
     context 'when not on starting row' do
-      let(:white_pawn) { Pawn.new(:white, [2, 0]) }
-      let(:black_pawn) { Pawn.new(:black, [5, 0]) }
+      let(:white_pawn) { Pawn.new(:white, [2, 0], board) }
+      let(:black_pawn) { Pawn.new(:black, [5, 0], board) }
+
       it 'returns one move for a white' do
         expect(white_pawn.on_starting_row?).to be false
         expect(white_pawn.pawn_moves).to eq([[1, 0]])

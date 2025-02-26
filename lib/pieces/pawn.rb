@@ -1,10 +1,12 @@
+require_relative '../board'
+
 class Pawn < Piece
-  INITIAL_PAWN_MOVES = [[1,0], [2, 0]].freeze
+  INITIAL_PAWN_MOVES = [[1, 0], [2, 0]].freeze
   PAWN_MOVES = [[1, 0]].freeze
   PAWN_CAPTURES = [[1, 1], [1, -1]].freeze
 
-  def initialize(color, start_position)
-    super(:pawn, color, start_position)
+  def initialize(color, start_position, board)
+    super(:pawn, color, start_position, board)
   end
 
   def find_moves(start)
@@ -13,6 +15,8 @@ class Pawn < Piece
 
   def pawn_moves
     return INITIAL_PAWN_MOVES if on_starting_row?
+    return PAWN_CAPTURES if @board.piece_at?(position[0] + 1, position[1] + 1) || @board.piece_at?(position[0] + 1, position[1] - 1)
+
     PAWN_MOVES
   end
 

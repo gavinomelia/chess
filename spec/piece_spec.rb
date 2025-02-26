@@ -1,7 +1,8 @@
 require_relative '../lib/piece'
 
 RSpec.describe Piece do
-  let(:piece) { Piece.new(:knight, :white, [0, 1]) }
+  let(:board) { Board.new }
+  let(:piece) { Piece.new(:knight, :white, [0, 1], board) }
 
   describe '#initialize' do
     context 'when it creates a piece' do
