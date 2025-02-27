@@ -38,11 +38,13 @@ class Board
 
   def find_piece(piece)
     @board.each_with_index do |row, x|
-      row.each_with_index do |cell, y|
-        return [x, y] if cell == piece
-      end
+      y = row.find_index(piece)
+      return [x, y] if y
     end
     nil
+  end
+
+  def obstructions(piece, new_position)
   end
 
   def print_board
