@@ -10,22 +10,17 @@ class Piece
   end
 
   def self.create_piece(type, color, board, position)
-    piece = case type
-            when :pawn
-              Pawn.new(color, board)
-            when :rook
-              Rook.new(color, board)
-            when :knight
-              Knight.new(color, board)
-            when :bishop
-              Bishop.new(color, board)
-            when :queen
-              Queen.new(color, board)
-            when :king
-              King.new(color, board)
-            else
-              raise "Unknown piece type: #{type}"
-            end
+    piece_class = {
+      pawn: Pawn,
+      rook: Rook,
+      knight: Knight,
+      bishop: Bishop,
+      queen: Queen,
+      king: King
+    }
+    raise ArgumentError, "Unknown piece type: #{type}" unless piece_class.key?(type)
+
+    piece = piece_class[type].new(color, board)
     board.place_piece(piece, position)
     piece
   end

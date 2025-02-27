@@ -33,5 +33,9 @@ RSpec.describe Piece do
     it 'places the knight on the board' do
       expect(board.grid[0][1]).to be_a(Piece)
     end
+
+    it 'raises an error for an invalid piece type' do
+      expect { Piece.create_piece(:invalid_piece, :white, board, [0, 1]) }.to raise_error(ArgumentError)
+    end
   end
 end
