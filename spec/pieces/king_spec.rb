@@ -49,8 +49,7 @@ RSpec.describe King do
 
       it 'returns possible moves for a white king' do
         expect(white_king.find_moves([0, 0])).to contain_exactly(
-          [0, 1],
-          [1, 0], [1, 1]
+          [0, 1], [1, 0], [1, 1]
         )
       end
     end
