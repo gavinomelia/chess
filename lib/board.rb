@@ -44,9 +44,6 @@ class Board
     nil
   end
 
-  def obstructions(piece, new_position)
-  end
-
   def print_board
     @board.each do |row|
       puts row.map { |cell| cell.nil? ? '.' : cell.type[0].upcase }.join(' ')
