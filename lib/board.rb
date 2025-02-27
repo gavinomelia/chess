@@ -93,18 +93,18 @@ class Board
   private
 
   def unicode_piece(piece)
-    case piece.class.to_s
-    when 'King'
+    case piece
+    when King
       piece.color == 'white' ? "\u2654" : "\u265A"
-    when 'Queen'
+    when Queen
       piece.color == 'white' ? "\u2655" : "\u265B"
-    when 'Rook'
+    when Rook
       piece.color == 'white' ? "\u2656" : "\u265C"
-    when 'Bishop'
+    when Bishop
       piece.color == 'white' ? "\u2657" : "\u265D"
-    when 'Knight'
+    when Knight
       piece.color == 'white' ? "\u2658" : "\u265E"
-    when 'Pawn'
+    when Pawn
       piece.color == 'white' ? "\u2659" : "\u265F"
     else
       '?'
