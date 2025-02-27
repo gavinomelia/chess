@@ -22,19 +22,19 @@ class Board
 
     # Place rooks
     [[0, 0], [0, 7], [7, 0], [7, 7]].each do |pos|
-      color = pos[0] == 0 ? 'black' : 'white'
+      color = pos[0].zero? ? 'black' : 'white'
       Piece.create_piece(:rook, color, self, pos)
     end
 
     # Place knights
     [[0, 1], [0, 6], [7, 1], [7, 6]].each do |pos|
-      color = pos[0] == 0 ? 'black' : 'white'
+      color = pos[0].zero? ? 'black' : 'white'
       Piece.create_piece(:knight, color, self, pos)
     end
 
     # Place bishops
     [[0, 2], [0, 5], [7, 2], [7, 5]].each do |pos|
-      color = pos[0] == 0 ? 'black' : 'white'
+      color = pos[0].zero? ? 'black' : 'white'
       Piece.create_piece(:bishop, color, self, pos)
     end
 

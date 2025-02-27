@@ -27,7 +27,7 @@ RSpec.describe Piece do
 
   describe '.create_piece' do
     it 'returns a knight' do
-      expect(Piece.create_piece(:knight, :white, board, [0, 1])).to be_a(Piece)
+      expect(Piece.for_type(:knight, :white, board, [0, 1])).to be_a(Piece)
     end
 
     it 'places the knight on the board' do
@@ -35,7 +35,7 @@ RSpec.describe Piece do
     end
 
     it 'raises an error for an invalid piece type' do
-      expect { Piece.create_piece(:invalid_piece, :white, board, [0, 1]) }.to raise_error(ArgumentError)
+      expect { Piece.for_type(:invalid_piece, :white, board, [0, 1]) }.to raise_error(ArgumentError)
     end
   end
 end
