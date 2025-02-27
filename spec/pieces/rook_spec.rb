@@ -35,7 +35,6 @@ RSpec.describe Rook do
       before do
         board.place_piece(white_rook, [4, 4])
         board.place_piece(Pawn.new(:white, board), [4, 6])
-        board.print_board
       end
 
       it 'returns possible moves for a white rook' do
