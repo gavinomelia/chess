@@ -1,25 +1,45 @@
 class Board
-  attr_accessor :board
+  attr_accessor :grid
 
   def initialize
-    @board = Array.new(8) { Array.new(8, nil) }
+    @grid = Array.new(8) { Array.new(8, nil) }
   end
 
   def piece_at?(x, y)
-    !@board[x][y].nil?
+    !@grid[x][y].nil?
   end
 
   def place_piece(piece, position)
     x, y = position
-    @board[x][y] = piece
+    @grid[x][y] = piece
   end
 
   def remove_piece(x, y)
-    @board[x][y] = nil
+    @grid[x][y] = nil
   end
 
   def empty?(x, y)
-    @board[x][y].nil?
+    @grid[x][y].nil?
+  end
+
+  def path_clear?(start_pos, end_pos)
+    start_x, start_y = start_pos
+    x2, y2 = end_pos
+
+    x_step = x2 <=> start_x
+    y_step = y2 <=> start_y
+
+    current_x = start_x + x_step
+    current_y = start_y + y_step
+
+    while [current_x, current_y] != [x2, y2]
+      return false unless empty?(current_x, current_y)
+
+      current_x += x_step
+      current_y += y_step
+    end
+
+    true
   end
 
   def move_piece(piece, new_position)
@@ -27,26 +47,46 @@ class Board
     return unless current_position
 
     x, y = current_position
-    @board[x][y] = nil
+    @grid[x][y] = nil
     x, y = new_position
-    @board[x][y] = piece
+    @grid[x][y] = piece
   end
 
   def enemy_piece?(x, y, color)
-    !empty?(x, y) && @board[x][y].color != color
+    !empty?(x, y) && @grid[x][y].color != color
   end
 
   def find_piece(piece)
-    @board.each_with_index do |row, x|
+    @grid.each_with_index do |row, x|
       y = row.find_index(piece)
       return [x, y] if y
     end
     nil
   end
 
-  def print_board
-    @board.each do |row|
-      puts row.map { |cell| cell.nil? ? '.' : cell.type[0].upcase }.join(' ')
+  def print_debug_board
+    puts "\n"
+    puts '  0 1 2 3 4 5 6 7'
+    @grid.each_with_index do |row, index|
+      print "#{index} "
+      row.each do |square|
+        print square.nil? ? '. ' : "#{square.class.to_s[0].upcase} "
+      end
+      puts "#{index}"
     end
+    puts '  0 1 2 3 4 5 6 7'
+  end
+
+  def print_board
+    puts "\n"
+    puts '  a b c d e f g h'
+    @grid.each_with_index do |row, index|
+      print "#{8 - index} "
+      row.each do |square|
+        print square.nil? ? '. ' : "#{square.class.to_s[0].upcase} "
+      end
+      puts "#{8 - index}"
+    end
+    puts '  a b c d e f g h'
   end
 end

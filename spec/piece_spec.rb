@@ -1,23 +1,26 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require_relative '../lib/piece'
 require_relative '../lib/board'
 
 RSpec.describe Piece do
   let(:board) { Board.new }
-  let(:piece) { Piece.new(:knight, :white, board) }
+  let(:knight) { Piece.new(:knight, :white, board) }
+  let(:rook) { Piece.new(:rook, :white, board) }
 
   before do
-    board.place_piece(piece, [0, 1])
+    board.place_piece(knight, [0, 1])
   end
 
   describe '#initialize' do
     context 'when it creates a piece' do
       it 'creates a piece with a color' do
-        expect(piece.color).to eq(:white)
+        expect(knight.color).to eq(:white)
       end
 
       it 'creates a piece with a type' do
-        expect(piece.type).to eq(:knight)
+        expect(knight.type).to eq(:knight)
       end
     end
   end

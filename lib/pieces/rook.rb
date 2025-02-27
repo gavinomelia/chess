@@ -17,8 +17,6 @@ class Rook < Piece
       moves << [i, y] unless i == x
     end
 
-    # TODO: Add logic to handle obstructions
-
-    moves
+    filter_moves(moves)
   end
 end

@@ -1,5 +1,3 @@
-require_relative '../piece'
-
 class Pawn < Piece
   MOVES = { initial: [[1, 0], [2, 0]], regular: [[1, 0]], captures: [[1, 1], [1, -1]] }.freeze
   WHITE_DIRECTION = 1

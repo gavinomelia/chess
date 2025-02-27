@@ -1,3 +1,5 @@
+require 'board'
+
 class Piece
   attr_reader :type, :color, :board
 
@@ -13,5 +15,18 @@ class Piece
 
   def on_board?(x, y)
     x.between?(0, 7) && y.between?(0, 7)
+  end
+
+  def valid_move?(new_position)
+    x, y = new_position
+    previous_position = @board.find_piece(self)
+    return false unless on_board?(x, y)
+    return false unless @board.path_clear?(previous_position, new_position)
+
+    true
+  end
+
+  def filter_moves(moves)
+    moves.select { |move| valid_move?(move) }
   end
 end
