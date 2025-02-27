@@ -24,4 +24,14 @@ RSpec.describe Piece do
       end
     end
   end
+
+  describe '.create_piece' do
+    it 'returns a knight' do
+      expect(Piece.create_piece(:knight, :white, board, [0, 1])).to be_a(Piece)
+    end
+
+    it 'places the knight on the board' do
+      expect(board.grid[0][1]).to be_a(Piece)
+    end
+  end
 end
