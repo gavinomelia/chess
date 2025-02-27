@@ -1,4 +1,4 @@
-require 'board'
+require_relative 'board'
 
 class Piece
   attr_reader :type, :color, :board
@@ -7,6 +7,27 @@ class Piece
     @type = type
     @color = color
     @board = board
+  end
+
+  def self.create_piece(type, color, board, position)
+    piece = case type
+            when :pawn
+              Pawn.new(color, board)
+            when :rook
+              Rook.new(color, board)
+            when :knight
+              Knight.new(color, board)
+            when :bishop
+              Bishop.new(color, board)
+            when :queen
+              Queen.new(color, board)
+            when :king
+              King.new(color, board)
+            else
+              raise "Unknown piece type: #{type}"
+            end
+    board.place_piece(piece, position)
+    piece
   end
 
   def move(new_position)
