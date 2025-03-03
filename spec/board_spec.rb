@@ -28,21 +28,6 @@ RSpec.describe Board do
     end
   end
 
-  describe '#path_clear?' do
-    it 'returns false if the path is obstructed' do
-      pawn = Piece.new(:pawn, :black, board)
-      board.place_piece(pawn, [1, 2])
-      board.place_piece(Piece.new(:pawn, :black, board), [2, 2])
-      expect(board.path_clear?([0, 1], [2, 2])).to be false
-    end
-
-    it 'return true if the path is clear' do
-      pawn = Piece.new(:pawn, :black, board)
-      board.place_piece(pawn, [2, 2])
-      expect(board.path_clear?([2, 2], [3, 2])).to be true
-    end
-  end
-
   describe '#setup' do
     before do
       board.setup

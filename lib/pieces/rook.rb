@@ -17,6 +17,6 @@ class Rook < Piece
       moves << [i, y] unless i == x
     end
 
-    filter_moves(moves)
+    moves
   end
 end

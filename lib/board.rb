@@ -69,26 +69,6 @@ class Board
     x.between?(0, 7) && y.between?(0, 7)
   end
 
-  def path_clear?(start_pos, end_pos)
-    start_x, start_y = start_pos
-    x2, y2 = end_pos
-
-    x_step = x2 <=> start_x
-    y_step = y2 <=> start_y
-
-    current_x = start_x + x_step
-    current_y = start_y + y_step
-
-    while [current_x, current_y] != [x2, y2]
-      return false unless empty?(current_x, current_y)
-
-      current_x += x_step
-      current_y += y_step
-    end
-
-    true
-  end
-
   def move_piece(piece, new_position)
     current_position = find_piece(piece)
     return unless current_position

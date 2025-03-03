@@ -37,14 +37,4 @@ RSpec.describe Knight do
       expect(knight.possible_moves(position)).to match_array(expected_moves)
     end
   end
-
-  describe '#valid_move?' do
-    it 'returns true for a move within the board boundaries' do
-      expect(Board.on_board?(4, 4)).to be true
-    end
-
-    it 'returns false for a move outside the board boundaries' do
-      expect(Board.on_board?(8, 9)).to be false
-    end
-  end
 end

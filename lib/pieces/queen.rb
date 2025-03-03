@@ -21,10 +21,10 @@ class Queen < Piece
     (-7..7).each do |i|
       next if i.zero?
 
-      moves << [x + i, y + i]
-      moves << [x + i, y - i]
+      moves << [x + i, y + i] if (0..7).include?(x + i) && (0..7).include?(y + i)
+      moves << [x + i, y - i] if (0..7).include?(x + i) && (0..7).include?(y - i)
     end
 
-    filter_moves(moves)
+    moves
   end
 end

@@ -10,10 +10,12 @@ class Bishop < Piece
     (-7..7).each do |i|
       next if i.zero?
 
-      moves << [x + i, y + i]
-      moves << [x + i, y - i]
+      new_positions = [[x + i, y + i], [x + i, y - i]]
+      new_positions.each do |new_x, new_y|
+        moves << [new_x, new_y] if new_x.between?(0, 7) && new_y.between?(0, 7)
+      end
     end
 
-    filter_moves(moves)
+    moves
   end
 end

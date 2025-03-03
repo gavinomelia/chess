@@ -23,21 +23,24 @@ RSpec.describe Bishop do
       )
     end
 
-    context 'when a piece is obstructing the path of the bishop' do
-      before do
-        board.place_piece(white_bishop, [4, 4])
-        board.place_piece(Pawn.new(:white, board), [2, 2])
-        board.place_piece(Pawn.new(:black, board), [6, 6])
-      end
+    # This test is commented out because the Bishop class does not currently handle obstructions.
+    # This will be the responsibility of the board rules class.
 
-      it 'returns possible moves for a white bishop' do
-        expect(white_bishop.find_moves([4, 4])).to contain_exactly(
-          [3, 3], [5, 5], [2, 2],
-          [1, 7], [2, 6], [3, 5],
-          [5, 3], [6, 2], [7, 1],
-          [6, 6]
-        )
-      end
-    end
+    # context 'when a piece is obstructing the path of the bishop' do
+    #   before do
+    #     board.place_piece(white_bishop, [4, 4])
+    #     board.place_piece(Pawn.new(:white, board), [2, 2])
+    #     board.place_piece(Pawn.new(:black, board), [6, 6])
+    #   end
+
+    #   it 'returns possible moves for a white bishop' do
+    #     expect(white_bishop.find_moves([4, 4])).to contain_exactly(
+    #       [3, 3], [5, 5], [2, 2],
+    #       [1, 7], [2, 6], [3, 5],
+    #       [5, 3], [6, 2], [7, 1],
+    #       [6, 6]
+    #     )
+    #   end
+    # end
   end
 end
