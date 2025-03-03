@@ -8,14 +8,11 @@ class Piece
   end
 
   def self.for_type(type, color, board, position)
-    piece = begin
+    begin
       const_get(type.capitalize.to_s)
     rescue NameError
       raise ArgumentError, "Unknown piece type: #{type}"
     end.new(color, board)
-
-    board.place_piece(piece, position)
-    piece
   end
 
   def move(new_position)

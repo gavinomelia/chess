@@ -16,35 +16,35 @@ class Board
   def setup
     # Place pawns
     (0..7).each do |i|
-      Piece.create_piece(:pawn, 'white', self, [6, i])
-      Piece.create_piece(:pawn, 'black', self, [1, i])
+      place_piece(Piece.for_type(:pawn, 'white', self, [6, i]), [6, i])
+      place_piece(Piece.for_type(:pawn, 'black', self, [1, i]), [1, i])
     end
 
     # Place rooks
     [[0, 0], [0, 7], [7, 0], [7, 7]].each do |pos|
       color = pos[0].zero? ? 'black' : 'white'
-      Piece.create_piece(:rook, color, self, pos)
+      place_piece(Piece.for_type(:rook, color, self, pos), pos)
     end
 
     # Place knights
     [[0, 1], [0, 6], [7, 1], [7, 6]].each do |pos|
       color = pos[0].zero? ? 'black' : 'white'
-      Piece.create_piece(:knight, color, self, pos)
+      place_piece(Piece.for_type(:knight, color, self, pos), pos)
     end
 
     # Place bishops
     [[0, 2], [0, 5], [7, 2], [7, 5]].each do |pos|
       color = pos[0].zero? ? 'black' : 'white'
-      Piece.create_piece(:bishop, color, self, pos)
+      place_piece(Piece.for_type(:bishop, color, self, pos), pos)
     end
 
     # Place queens
-    Piece.create_piece(:queen, 'black', self, [0, 3])
-    Piece.create_piece(:queen, 'white', self, [7, 3])
+    place_piece(Piece.for_type(:queen, 'black', self, [0, 3]), [0, 3])
+    place_piece(Piece.for_type(:queen, 'white', self, [7, 3]), [7, 3])
 
     # Place kings
-    Piece.create_piece(:king, 'black', self, [0, 4])
-    Piece.create_piece(:king, 'white', self, [7, 4])
+    place_piece(Piece.for_type(:king, 'black', self, [0, 4]), [0, 4])
+    place_piece(Piece.for_type(:king, 'white', self, [7, 4]), [7, 4])
   end
 
   def piece_at?(x, y)
@@ -52,6 +52,7 @@ class Board
   end
 
   def place_piece(piece, position)
+    Piece.for_type(piece.type, piece.color, self, position)
     x, y = position
     @grid[x][y] = piece
   end
