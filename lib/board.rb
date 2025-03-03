@@ -65,6 +65,10 @@ class Board
     @grid[x][y].nil?
   end
 
+  def self.on_board?(x, y)
+    x.between?(0, 7) && y.between?(0, 7)
+  end
+
   def path_clear?(start_pos, end_pos)
     start_x, start_y = start_pos
     x2, y2 = end_pos

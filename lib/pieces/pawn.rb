@@ -40,7 +40,7 @@ class Pawn < Piece
     pawn_moves(position).each do |(dx, dy)|
       new_x = x + dx
       new_y = y + dy
-      moves << [new_x, new_y] if on_board?(new_x, new_y) && @board.empty?(new_x, new_y)
+      moves << [new_x, new_y] if Board.on_board?(new_x, new_y) && @board.empty?(new_x, new_y)
     end
 
     moves
@@ -53,7 +53,7 @@ class Pawn < Piece
     pawn_captures.each do |(dx, dy)|
       new_x = x + dx
       new_y = y + dy
-      moves << [new_x, new_y] if on_board?(new_x, new_y) && @board.enemy_piece?(new_x, new_y, color)
+      moves << [new_x, new_y] if Board.on_board?(new_x, new_y) && @board.enemy_piece?(new_x, new_y, color)
     end
 
     moves

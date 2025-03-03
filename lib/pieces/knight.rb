@@ -17,7 +17,7 @@ class Knight < Piece
     KNIGHT_MOVES.each_with_object([]) do |(dx, dy), moves|
       new_x = x + dx
       new_y = y + dy
-      moves << [new_x, new_y] if on_board?(new_x, new_y)
+      moves << [new_x, new_y] if Board.on_board?(new_x, new_y)
     end
   end
 end

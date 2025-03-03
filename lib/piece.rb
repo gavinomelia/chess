@@ -15,18 +15,10 @@ class Piece
     end.new(color, board)
   end
 
-  def move(new_position)
-    @board.move_piece(self, new_position)
-  end
-
-  def on_board?(x, y)
-    x.between?(0, 7) && y.between?(0, 7)
-  end
-
   def valid_move?(new_position)
     x, y = new_position
     previous_position = @board.find_piece(self)
-    return false unless on_board?(x, y)
+    return false unless Board.on_board?(x, y)
     return false unless @board.path_clear?(previous_position, new_position)
 
     true
