@@ -3,6 +3,9 @@ require_relative '../lib/board_rules'
 require_relative '../lib/board'
 require_relative '../lib/piece'
 require_relative '../lib/pieces/pawn'
+require_relative '../lib/pieces/rook'
+require_relative '../lib/pieces/bishop'
+require_relative '../lib/pieces/queen'
 
 RSpec.describe BoardRules do
   let(:board) { Board.new }
@@ -10,10 +13,8 @@ RSpec.describe BoardRules do
 
   describe '#valid_moves' do
     it 'returns only legal moves for a piece' do
-      require_relative '../lib/pieces/rook'
       rook = Rook.new(:white)
       board.place_piece(rook, [0, 0])
-
       board.place_piece(Pawn.new(:white), [0, 2])
 
       expected_moves = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [0, 1]]
@@ -24,7 +25,6 @@ RSpec.describe BoardRules do
 
   describe '#legal_move?' do
     it 'returns false if the move is off the board' do
-      require_relative '../lib/pieces/pawn'
       pawn = Pawn.new(:white)
       board.place_piece(pawn, [0, 0])
 
@@ -32,7 +32,6 @@ RSpec.describe BoardRules do
     end
 
     it 'returns false if the path is not clear' do
-      require_relative '../lib/pieces/bishop'
       bishop = Bishop.new(:white)
       board.place_piece(bishop, [0, 0])
       board.place_piece(Pawn.new(:white), [1, 1])
@@ -41,7 +40,6 @@ RSpec.describe BoardRules do
     end
 
     it 'returns true if the destination is on the board and the path is clear' do
-      require_relative '../lib/pieces/queen'
       queen = Queen.new(:white)
       board.place_piece(queen, [4, 4])
 
@@ -65,12 +63,7 @@ RSpec.describe BoardRules do
   end
 
   describe '#filter_moves' do
-    let(:board) { Board.new }
-    let(:board_rules) { BoardRules.new(board) }
-
     it 'filters out invalid moves' do
-      require_relative '../lib/pieces/rook'
-
       rook = Rook.new(:white)
       board.place_piece(rook, [0, 0])
       board.place_piece(Pawn.new(:white), [0, 1]) # Obstacle in the path
@@ -83,8 +76,6 @@ RSpec.describe BoardRules do
     end
 
     it 'filters out capturing friendly pieces' do
-      require_relative '../lib/pieces/rook'
-
       rook = Rook.new(:white)
       board.place_piece(rook, [0, 0])
       board.place_piece(Pawn.new(:white), [1, 1]) # Friendly piece to capture
@@ -96,11 +87,12 @@ RSpec.describe BoardRules do
     end
 
     it 'allows capturing opponent pieces' do
-      require_relative '../lib/pieces/rook'
       rook = Rook.new(:white)
       board.place_piece(rook, [0, 0])
       board.place_piece(Pawn.new(:black), [0, 1]) # Opponent piece to capture
+
       filtered_moves = board_rules.filter_moves(rook, rook.find_moves([0, 0]))
+
       expect(filtered_moves).to include([0, 1])
     end
 
@@ -155,25 +147,19 @@ RSpec.describe BoardRules do
     end
 
     context 'when validating rook moves' do
-      context 'when a piece is obstructing the path of the rook' do
-        require_relative '../lib/pieces/rook'
-        let(:rook) { Rook.new(:white) }
+      let(:rook) { Rook.new(:white) }
 
-        before do
-          board.place_piece(rook, [4, 4])
-          board.place_piece(Pawn.new(:white), [4, 6])
-        end
+      before do
+        board.place_piece(rook, [4, 4])
+        board.place_piece(Pawn.new(:white), [4, 6])
+      end
 
-        it 'does not include moves that go through a piece' do
-          expect(board_rules.filter_moves(rook, rook.find_moves([4, 4]))).not_to include(
-            [4, 6], [4, 7]
-          )
-        end
+      it 'does not include moves that go through a piece' do
+        expect(board_rules.filter_moves(rook, rook.find_moves([4, 4]))).not_to include([4, 6], [4, 7])
       end
     end
 
     context 'when validating bishop moves' do
-      require_relative '../lib/pieces/bishop'
       let(:bishop) { Bishop.new(:white) }
 
       before do
@@ -187,7 +173,6 @@ RSpec.describe BoardRules do
     end
 
     context 'when validating queen moves' do
-      require_relative '../lib/pieces/queen'
       let(:queen) { Queen.new(:white) }
 
       before do
