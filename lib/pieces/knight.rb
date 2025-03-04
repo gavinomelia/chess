@@ -1,11 +1,13 @@
+require_relative '../piece'
+
 class Knight < Piece
   KNIGHT_MOVES = [
     [2, 1], [2, -1], [-2, 1], [-2, -1],
     [1, 2], [1, -2], [-1, 2], [-1, -2]
   ].freeze
 
-  def initialize(color, board)
-    super(:knight, color, board)
+  def initialize(color)
+    super(:knight, color)
   end
 
   def find_moves(start)
