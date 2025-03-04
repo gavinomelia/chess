@@ -7,7 +7,7 @@ require_relative '../lib/board'
 RSpec.describe Piece do
   let(:board) { Board.new }
   let(:knight) { Piece.new(:knight, :white, board) }
-  let(:rook) { Piece.new(:rook, :white, board) }
+  let(:rook) { Piece.new(:rook, :white) }
 
   before do
     board.place_piece(knight, [0, 1])

@@ -1,6 +1,6 @@
 class Rook < Piece
-  def initialize(color, board)
-    super(:rook, color, board)
+  def initialize(color)
+    super(:rook, color)
   end
 
   def find_moves(position)

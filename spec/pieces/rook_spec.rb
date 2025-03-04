@@ -4,8 +4,8 @@ require_relative '../../lib/board'
 
 RSpec.describe Rook do
   let(:board) { Board.new }
-  let(:white_rook) { Rook.new(:white, board) }
-  let(:black_rook) { Rook.new(:black, board) }
+  let(:white_rook) { Rook.new(:white) }
+  let(:black_rook) { Rook.new(:black) }
 
   describe '#initialize' do
     it 'creates a white rook' do
@@ -39,7 +39,7 @@ RSpec.describe Rook do
       end
 
       it 'returns possible moves for a white rook' do
-        contain_exactly(
+        expect(white_rook.find_moves([4, 4])).to contain_exactly(
           [0, 4], [1, 4], [2, 4], [3, 4],
           [4, 0], [4, 1], [4, 2], [4, 3], [4, 5],
           [5, 4], [6, 4], [7, 4]

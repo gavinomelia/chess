@@ -1,3 +1,5 @@
+require_relative 'board'
+
 class BoardRules
   def initialize(board)
     @board = board
@@ -12,17 +14,17 @@ class BoardRules
     x, y = new_position
     previous_position = @board.find_piece(piece)
     return false unless on_board?(x, y)
-    return false unless path_clear?(previous_position, new_position)
+    return false unless path_clear?(previous_position, new_position, piece.color)
+    return false if piece.is_a?(Pawn) && !valid_pawn_move?(piece, new_position)
 
     true
   end
 
-  # TODO: There's another on_board on the board class.
   def on_board?(x, y)
     x.between?(0, 7) && y.between?(0, 7)
   end
 
-  def path_clear?(start_pos, end_pos)
+  def path_clear?(start_pos, end_pos, color)
     start_x, start_y = start_pos
     x2, y2 = end_pos
 
@@ -39,7 +41,27 @@ class BoardRules
       current_y += y_step
     end
 
-    true
+    # Check the final position for capture rules
+    check_captures(x2, y2, color)
+  end
+
+  def check_captures(x, y, color)
+    @board.empty?(x, y) || @board.enemy_piece?(x, y, color)
+  end
+
+  def valid_pawn_move?(pawn, new_position)
+    x, y = new_position
+    previous_position = @board.find_piece(pawn)
+    dx = x - previous_position[0]
+    dy = y - previous_position[1]
+
+    if pawn.pawn_captures.include?([dx, dy])
+      @board.enemy_piece?(x, y, pawn.color)
+    elsif pawn.pawn_moves(previous_position).include?([dx, dy])
+      @board.empty?(x, y)
+    else
+      false
+    end
   end
 
   def filter_moves(piece, moves)
