@@ -17,10 +17,7 @@ class BoardRules
     previous_position = @board.find_piece(piece)
     return false unless on_board?(x, y)
     return false unless path_clear?(previous_position, new_position, piece.color)
-    return false if piece.is_a?(Pawn) && !valid_pawn_move?(piece, new_position)
-    return false if piece.is_a?(Rook) && !valid_rook_move?(piece, new_position)
-    return false if piece.is_a?(Bishop) && !valid_bishop_move?(piece, new_position)
-    return false if piece.is_a?(Queen) && !valid_queen_move?(piece, new_position)
+    return false unless valid_piece_move?(piece, previous_position, new_position)
 
     true
   end
@@ -46,7 +43,6 @@ class BoardRules
       current_y += y_step
     end
 
-    # Check the final position for capture rules
     @board.empty?(x2, y2) || @board.enemy_piece?(x2, y2, color)
   end
 
@@ -54,10 +50,25 @@ class BoardRules
     moves.select { |move| legal_move?(piece, move) }
   end
 
-  # PAWN MOVES
-  def valid_pawn_move?(pawn, new_position)
+  private
+
+  def valid_piece_move?(piece, previous_position, new_position)
+    case piece
+    when Pawn
+      valid_pawn_move?(piece, previous_position, new_position)
+    when Rook
+      valid_rook_move?(piece, previous_position, new_position)
+    when Bishop
+      valid_bishop_move?(piece, previous_position, new_position)
+    when Queen
+      valid_queen_move?(piece, previous_position, new_position)
+    else
+      false
+    end
+  end
+
+  def valid_pawn_move?(pawn, previous_position, new_position)
     x, y = new_position
-    previous_position = @board.find_piece(pawn)
     dx = x - previous_position[0]
     dy = y - previous_position[1]
 
@@ -70,36 +81,30 @@ class BoardRules
     end
   end
 
-  # ROOK MOVES
-  def valid_rook_move?(rook, new_position)
+  def valid_rook_move?(rook, previous_position, new_position)
     x, y = new_position
-    previous_position = @board.find_piece(rook)
     dx = x - previous_position[0]
     dy = y - previous_position[1]
 
     return false if dx.zero? && dy.zero?
-
-    # Rook moves must be in a straight line
     return false unless dx.zero? || dy.zero?
 
-    path_clear?(previous_position, new_position, rook.color)
+    true
   end
 
-  def valid_bishop_move?(bishop, new_position)
+  def valid_bishop_move?(bishop, previous_position, new_position)
     x, y = new_position
-    previous_position = @board.find_piece(bishop)
     dx = x - previous_position[0]
     dy = y - previous_position[1]
 
     return false if dx.zero? && dy.zero?
-
-    # Bishop moves must be diagonal
     return false unless dx.abs == dy.abs
 
-    path_clear?(previous_position, new_position, bishop.color)
+    true
   end
 
-  def valid_queen_move?(queen, new_position)
-    valid_bishop_move?(queen, new_position) || valid_rook_move?(queen, new_position)
+  def valid_queen_move?(queen, previous_position, new_position)
+    valid_bishop_move?(queen, previous_position,
+                       new_position) || valid_rook_move?(queen, previous_position, new_position)
   end
 end
