@@ -1,6 +1,8 @@
 require_relative 'board'
 
 class BoardRules
+  attr_reader :board
+
   def initialize(board)
     @board = board
   end
@@ -16,6 +18,7 @@ class BoardRules
     return false unless on_board?(x, y)
     return false unless path_clear?(previous_position, new_position, piece.color)
     return false if piece.is_a?(Pawn) && !valid_pawn_move?(piece, new_position)
+    return false if piece.is_a?(Rook) && !valid_rook_move?(piece, new_position)
 
     true
   end
@@ -42,13 +45,14 @@ class BoardRules
     end
 
     # Check the final position for capture rules
-    check_captures(x2, y2, color)
+    @board.empty?(x2, y2) || @board.enemy_piece?(x2, y2, color)
   end
 
-  def check_captures(x, y, color)
-    @board.empty?(x, y) || @board.enemy_piece?(x, y, color)
+  def filter_moves(piece, moves)
+    moves.select { |move| legal_move?(piece, move) }
   end
 
+  # PAWN MOVES
   def valid_pawn_move?(pawn, new_position)
     x, y = new_position
     previous_position = @board.find_piece(pawn)
@@ -64,7 +68,18 @@ class BoardRules
     end
   end
 
-  def filter_moves(piece, moves)
-    moves.select { |move| legal_move?(piece, move) }
+  # ROOK MOVES
+  def valid_rook_move?(rook, new_position)
+    x, y = new_position
+    previous_position = @board.find_piece(rook)
+    dx = x - previous_position[0]
+    dy = y - previous_position[1]
+
+    return false if dx.zero? && dy.zero?
+
+    # Rook moves must be in a straight line
+    return false unless dx.zero? || dy.zero?
+
+    path_clear?(previous_position, new_position, rook.color)
   end
 end

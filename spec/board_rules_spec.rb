@@ -152,5 +152,24 @@ RSpec.describe BoardRules do
         expect(board_rules.filter_moves(white_pawn, white_pawn.find_moves([4, 4]))).to include([5, 5])
       end
     end
+
+    context 'when validating rook moves' do
+      context 'when a piece is obstructing the path of the rook' do
+        require_relative '../lib/pieces/rook'
+        let(:rook) { Rook.new(:white) }
+
+        before do
+          board.place_piece(rook, [4, 4])
+          board.place_piece(Pawn.new(:white), [4, 6])
+        end
+
+        it 'does not include moves that go through a piece' do
+          board.print_debug_board
+          expect(board_rules.filter_moves(rook, rook.find_moves([4, 4]))).not_to include(
+            [4, 6], [4, 7]
+          )
+        end
+      end
+    end
   end
 end
