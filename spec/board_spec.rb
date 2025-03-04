@@ -15,14 +15,14 @@ RSpec.describe Board do
 
   describe '#place_piece' do
     it 'places a piece on the board' do
-      board.place_piece(Piece.new(:pawn, :white, board), [0, 0])
+      board.place_piece(Piece.new(:pawn, :white), [0, 0])
       expect(board.grid[0][0]).to be_a(Piece)
     end
   end
 
   describe '#remove_piece' do
     it 'removes a piece from the board' do
-      board.place_piece(Piece.new(:pawn, :white, board), [0, 0])
+      board.place_piece(Piece.new(:pawn, :white), [0, 0])
       board.remove_piece(0, 0)
       expect(board.grid[0][0]).to be_nil
     end

@@ -1,10 +1,12 @@
+require_relative '../piece'
+
 class King < Piece
   MOVES = [
     [-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]
   ]
 
-  def initialize(color, board)
-    super(:king, color, board)
+  def initialize(color)
+    super(:king, color)
   end
 
   def find_moves(position)

@@ -5,46 +5,47 @@ require_relative '../lib/piece'
 require_relative '../lib/pieces/pawn'
 
 RSpec.describe BoardRules do
-  let(:board) { double('board') }
-  let(:piece) { double('piece') }
+  let(:board) { Board.new }
   let(:board_rules) { BoardRules.new(board) }
 
   describe '#valid_moves' do
     it 'returns only legal moves for a piece' do
-      allow(board).to receive(:find_piece).with(piece).and_return([0, 0])
-      allow(piece).to receive(:unvalidated_moves).and_return([[1, 2], [3, 4], [5, 6]])
-      allow(board_rules).to receive(:legal_move?).with(piece, [1, 2]).and_return(true)
-      allow(board_rules).to receive(:legal_move?).with(piece, [3, 4]).and_return(false)
-      allow(board_rules).to receive(:legal_move?).with(piece, [5, 6]).and_return(true)
+      require_relative '../lib/pieces/rook'
+      rook = Rook.new(:white)
+      board.place_piece(rook, [0, 0])
 
-      expect(board_rules.valid_moves(piece)).to eq([[1, 2], [5, 6]])
+      board.place_piece(Pawn.new(:white), [0, 2])
+
+      expected_moves = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [0, 1]]
+
+      expect(board_rules.valid_moves(rook)).to match_array(expected_moves)
     end
   end
 
   describe '#legal_move?' do
     it 'returns false if the move is off the board' do
-      allow(board).to receive(:find_piece).with(piece).and_return([0, 0])
-      expect(board_rules.on_board?(8, 8)).to be false
+      require_relative '../lib/pieces/pawn'
+      pawn = Pawn.new(:white)
+      board.place_piece(pawn, [0, 0])
 
-      expect(board_rules.legal_move?(piece, [8, 8])).to be false
+      expect(board_rules.legal_move?(pawn, [8, 8])).to be false
     end
 
     it 'returns false if the path is not clear' do
-      allow(board).to receive(:find_piece).with(piece).and_return([0, 0])
-      allow(board_rules).to receive(:on_board?).with(1, 1).and_return(true)
-      allow(piece).to receive(:color).and_return(:white)
-      allow(board_rules).to receive(:path_clear?).with([0, 0], [1, 1], :white).and_return(false)
+      require_relative '../lib/pieces/bishop'
+      bishop = Bishop.new(:white)
+      board.place_piece(bishop, [0, 0])
+      board.place_piece(Pawn.new(:white), [1, 1])
 
-      expect(board_rules.legal_move?(piece, [1, 1])).to be false
+      expect(board_rules.legal_move?(bishop, [2, 2])).to be false
     end
 
-    it 'returns true if the move is valid' do
-      allow(board).to receive(:find_piece).with(piece).and_return([0, 0])
-      allow(board_rules).to receive(:on_board?).with(1, 1).and_return(true)
-      allow(piece).to receive(:color).and_return(:white)
-      allow(board_rules).to receive(:path_clear?).with([0, 0], [1, 1], :white).and_return(true)
+    it 'returns true if the destination is on the board and the path is clear' do
+      require_relative '../lib/pieces/queen'
+      queen = Queen.new(:white)
+      board.place_piece(queen, [4, 4])
 
-      expect(board_rules.legal_move?(piece, [1, 1])).to be true
+      expect(board_rules.legal_move?(queen, [6, 6])).to be true
     end
   end
 
@@ -164,7 +165,6 @@ RSpec.describe BoardRules do
         end
 
         it 'does not include moves that go through a piece' do
-          board.print_debug_board
           expect(board_rules.filter_moves(rook, rook.find_moves([4, 4]))).not_to include(
             [4, 6], [4, 7]
           )
@@ -182,7 +182,6 @@ RSpec.describe BoardRules do
       end
 
       it 'does not include moves that go through a piece' do
-        board.print_debug_board
         expect(board_rules.filter_moves(bishop, bishop.find_moves([4, 4]))).not_to include([7, 7])
       end
     end
@@ -197,7 +196,6 @@ RSpec.describe BoardRules do
       end
 
       it 'does not include moves that go through a piece' do
-        board.print_debug_board
         expect(board_rules.filter_moves(queen, queen.find_moves([4, 4]))).not_to include([7, 7])
       end
     end

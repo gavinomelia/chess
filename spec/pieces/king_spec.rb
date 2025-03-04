@@ -4,8 +4,8 @@ require_relative '../../lib/board'
 
 RSpec.describe King do
   let(:board) { Board.new }
-  let(:white_king) { King.new(:white, board) }
-  let(:black_king) { King.new(:black, board) }
+  let(:white_king) { King.new(:white) }
+  let(:black_king) { King.new(:black) }
 
   describe '#initialize' do
     it 'creates a white king' do

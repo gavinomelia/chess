@@ -8,7 +8,8 @@ class BoardRules
   end
 
   def valid_moves(piece)
-    unvalidated_moves = piece.unvalidated_moves
+    position = @board.find_piece(piece)
+    unvalidated_moves = piece.find_moves(position)
     filter_moves(piece, unvalidated_moves)
   end
 
