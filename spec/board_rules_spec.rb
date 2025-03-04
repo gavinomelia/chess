@@ -67,8 +67,6 @@ RSpec.describe BoardRules do
     let(:board) { Board.new }
     let(:board_rules) { BoardRules.new(board) }
 
-    # TODO: Make Board Rules handle friendly obstructions
-
     it 'filters out invalid moves' do
       require_relative '../lib/pieces/rook'
 
