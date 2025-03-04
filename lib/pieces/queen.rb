@@ -1,6 +1,8 @@
+require_relative '../piece'
+
 class Queen < Piece
-  def initialize(color, board)
-    super(:queen, color, board)
+  def initialize(color)
+    super(:queen, color)
   end
 
   def find_moves(position)

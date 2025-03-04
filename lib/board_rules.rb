@@ -19,6 +19,8 @@ class BoardRules
     return false unless path_clear?(previous_position, new_position, piece.color)
     return false if piece.is_a?(Pawn) && !valid_pawn_move?(piece, new_position)
     return false if piece.is_a?(Rook) && !valid_rook_move?(piece, new_position)
+    return false if piece.is_a?(Bishop) && !valid_bishop_move?(piece, new_position)
+    return false if piece.is_a?(Queen) && !valid_queen_move?(piece, new_position)
 
     true
   end
@@ -81,5 +83,23 @@ class BoardRules
     return false unless dx.zero? || dy.zero?
 
     path_clear?(previous_position, new_position, rook.color)
+  end
+
+  def valid_bishop_move?(bishop, new_position)
+    x, y = new_position
+    previous_position = @board.find_piece(bishop)
+    dx = x - previous_position[0]
+    dy = y - previous_position[1]
+
+    return false if dx.zero? && dy.zero?
+
+    # Bishop moves must be diagonal
+    return false unless dx.abs == dy.abs
+
+    path_clear?(previous_position, new_position, bishop.color)
+  end
+
+  def valid_queen_move?(queen, new_position)
+    valid_bishop_move?(queen, new_position) || valid_rook_move?(queen, new_position)
   end
 end

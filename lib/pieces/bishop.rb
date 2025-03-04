@@ -1,6 +1,8 @@
+require_relative '../piece'
+
 class Bishop < Piece
-  def initialize(color, board)
-    super(:bishop, color, board)
+  def initialize(color)
+    super(:bishop, color)
   end
 
   def find_moves(position)

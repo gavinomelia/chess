@@ -171,5 +171,35 @@ RSpec.describe BoardRules do
         end
       end
     end
+
+    context 'when validating bishop moves' do
+      require_relative '../lib/pieces/bishop'
+      let(:bishop) { Bishop.new(:white) }
+
+      before do
+        board.place_piece(bishop, [4, 4])
+        board.place_piece(Pawn.new(:white), [6, 6])
+      end
+
+      it 'does not include moves that go through a piece' do
+        board.print_debug_board
+        expect(board_rules.filter_moves(bishop, bishop.find_moves([4, 4]))).not_to include([7, 7])
+      end
+    end
+
+    context 'when validating queen moves' do
+      require_relative '../lib/pieces/queen'
+      let(:queen) { Queen.new(:white) }
+
+      before do
+        board.place_piece(queen, [4, 4])
+        board.place_piece(Pawn.new(:white), [6, 6])
+      end
+
+      it 'does not include moves that go through a piece' do
+        board.print_debug_board
+        expect(board_rules.filter_moves(queen, queen.find_moves([4, 4]))).not_to include([7, 7])
+      end
+    end
   end
 end

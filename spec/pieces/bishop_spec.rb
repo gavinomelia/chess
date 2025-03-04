@@ -4,7 +4,7 @@ require_relative '../../lib/board'
 
 RSpec.describe Bishop do
   let(:board) { Board.new }
-  let(:white_bishop) { Bishop.new(:white, board) }
+  let(:white_bishop) { Bishop.new(:white) }
 
   describe '#initialize' do
     it 'creates a white bishop' do
