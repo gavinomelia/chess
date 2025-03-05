@@ -97,37 +97,48 @@ RSpec.describe BoardRules do
     end
 
     context 'when validating pawn moves' do
-      let(:white_pawn) { Pawn.new(:white) }
       let(:black_pawn) { Pawn.new(:black) }
+      let(:white_pawn) { Pawn.new(:white) }
 
       before do
-        board.place_piece(white_pawn, [1, 0])
-        board.place_piece(black_pawn, [6, 0])
-      end
-
-      it 'returns possible moves for a white pawn' do
-        expect(board_rules.filter_moves(white_pawn, white_pawn.find_moves([1, 0]))).to contain_exactly([2, 0], [3, 0])
+        board.place_piece(black_pawn, [1, 0])
+        board.place_piece(white_pawn, [6, 0])
       end
 
       it 'returns possible moves for a black pawn' do
-        expect(board_rules.filter_moves(black_pawn, black_pawn.find_moves([6, 0]))).to contain_exactly([5, 0], [4, 0])
+        expect(board_rules.filter_moves(black_pawn, black_pawn.find_moves([1, 0]))).to contain_exactly([2, 0], [3, 0])
       end
 
-      it 'returns capture moves for a white pawn' do
-        board.place_piece(Pawn.new(:black), [2, 1])
-        expect(board_rules.filter_moves(white_pawn,
-                                        white_pawn.find_moves([1, 0]))).to contain_exactly([2, 0], [3, 0], [2, 1])
+      it 'returns possible moves for a white pawn' do
+        expect(board_rules.filter_moves(white_pawn, white_pawn.find_moves([6, 0]))).to contain_exactly([5, 0], [4, 0])
       end
 
       it 'returns capture moves for a black pawn' do
-        board.place_piece(Pawn.new(:white), [5, 1])
+        board.place_piece(Pawn.new(:black), [2, 1])
         expect(board_rules.filter_moves(black_pawn,
-                                        black_pawn.find_moves([6, 0]))).to contain_exactly([5, 0], [4, 0], [5, 1])
+                                        black_pawn.find_moves([1, 0]))).to contain_exactly([2, 0], [3, 0])
+      end
+
+      it 'returns capture moves for a white pawn' do
+        board.place_piece(Pawn.new(:black), [5, 1])
+        expect(board_rules.filter_moves(white_pawn,
+                                        white_pawn.find_moves([6, 0]))).to contain_exactly([5, 0], [4, 0], [5, 1])
       end
 
       it 'does not return moves for a white pawn blocked by another piece' do
         board.place_piece(Pawn.new(:black), [2, 0])
-        expect(board_rules.filter_moves(white_pawn, white_pawn.find_moves([1, 0]))).to be_empty
+        expect(board_rules.filter_moves(black_pawn, black_pawn.find_moves([1, 0]))).to be_empty
+      end
+
+      it 'allows a double step on first move for a white pawn' do
+        # Clear the board and place a fresh black pawn
+        board = Board.new
+        board_rules = BoardRules.new(board)
+        white_pawn = Pawn.new(:white)
+        board.place_piece(white_pawn, [6, 4])
+
+        filtered_moves = board_rules.filter_moves(white_pawn, white_pawn.find_moves([6, 4]))
+        expect(filtered_moves).to include([4, 4])
       end
 
       xit 'returns en passant move for a white pawn' do

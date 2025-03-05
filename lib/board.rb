@@ -16,35 +16,35 @@ class Board
   def setup
     # Place pawns
     (0..7).each do |i|
-      place_piece(Piece.for_type(:pawn, 'white'), [6, i])
-      place_piece(Piece.for_type(:pawn, 'black'), [1, i])
+      place_piece(Piece.for_type(:pawn, :white), [6, i])
+      place_piece(Piece.for_type(:pawn, :black), [1, i])
     end
 
     # Place rooks
     [[0, 0], [0, 7], [7, 0], [7, 7]].each do |pos|
-      color = pos[0].zero? ? 'black' : 'white'
+      color = pos[0].zero? ? :black : :white
       place_piece(Piece.for_type(:rook, color), pos)
     end
 
     # Place knights
     [[0, 1], [0, 6], [7, 1], [7, 6]].each do |pos|
-      color = pos[0].zero? ? 'black' : 'white'
+      color = pos[0].zero? ? :black : :white
       place_piece(Piece.for_type(:knight, color), pos)
     end
 
     # Place bishops
     [[0, 2], [0, 5], [7, 2], [7, 5]].each do |pos|
-      color = pos[0].zero? ? 'black' : 'white'
+      color = pos[0].zero? ? :black : :white
       place_piece(Piece.for_type(:bishop, color), pos)
     end
 
     # Place queens
-    place_piece(Piece.for_type(:queen, 'black'), [0, 3])
-    place_piece(Piece.for_type(:queen, 'white'), [7, 3])
+    place_piece(Piece.for_type(:queen, :black), [0, 3])
+    place_piece(Piece.for_type(:queen, :white), [7, 3])
 
     # Place kings
-    place_piece(Piece.for_type(:king, 'black'), [0, 4])
-    place_piece(Piece.for_type(:king, 'white'), [7, 4])
+    place_piece(Piece.for_type(:king, :black), [0, 4])
+    place_piece(Piece.for_type(:king, :white), [7, 4])
   end
 
   def piece_at?(x, y)
@@ -126,17 +126,17 @@ class Board
   def unicode_piece(piece)
     case piece
     when King
-      piece.color == 'white' ? "\u2654" : "\u265A"
+      piece.color == :white ? "\u265A" : "\u2654"
     when Queen
-      piece.color == 'white' ? "\u2655" : "\u265B"
+      piece.color == :white ? "\u265B" : "\u2655"
     when Rook
-      piece.color == 'white' ? "\u2656" : "\u265C"
+      piece.color == :white ? "\u265C" : "\u2656"
     when Bishop
-      piece.color == 'white' ? "\u2657" : "\u265D"
+      piece.color == :white ? "\u265D" : "\u2657"
     when Knight
-      piece.color == 'white' ? "\u2658" : "\u265E"
+      piece.color == :white ? "\u265E" : "\u2658"
     when Pawn
-      piece.color == 'white' ? "\u2659" : "\u265F"
+      piece.color == :white ? "\u265F" : "\u2659"
     else
       '?'
     end

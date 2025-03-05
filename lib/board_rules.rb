@@ -44,7 +44,7 @@ class BoardRules
       current_y += y_step
     end
 
-    @board.empty?(x2, y2) || @board.enemy_piece?(x2, y2, color)
+    !@board.friendly_piece?(x2, y2, color)
   end
 
   def filter_moves(piece, moves)
@@ -74,14 +74,22 @@ class BoardRules
     x, y = new_position
     dx = x - previous_position[0]
     dy = y - previous_position[1]
+    direction = pawn.direction
 
-    if pawn.pawn_captures.include?([dx, dy])
-      @board.enemy_piece?(x, y, pawn.color)
-    elsif pawn.pawn_moves(previous_position).include?([dx, dy])
+    if dx == direction && dy.zero?
       @board.empty?(x, y)
+    elsif dx == direction && dy.abs == 1
+      @board.enemy_piece?(x, y, pawn.color)
+    elsif on_starting_row?(pawn.color, previous_position) && dx == 2 * direction && dy.zero?
+      intermediate_x = previous_position[0] + direction
+      @board.empty?(x, y) && @board.empty?(intermediate_x, y)
     else
       false
     end
+  end
+
+  def on_starting_row?(color, position)
+    (color == :white && position[0] == 6) || (color == :black && position[0] == 1)
   end
 
   def valid_rook_move?(rook, previous_position, new_position)

@@ -1,58 +1,36 @@
-require_relative '../piece'
+# frozen_string_literal: true
 
+# Represents a pawn in a chess game.
 class Pawn < Piece
-  MOVES = { initial: [[1, 0], [2, 0]], regular: [[1, 0]], captures: [[1, 1], [1, -1]] }.freeze
-  WHITE_DIRECTION = 1
-  BLACK_DIRECTION = -1
+  WHITE_DIRECTION = -1
+  BLACK_DIRECTION = 1
 
   def initialize(color)
     super(:pawn, color)
-    @direction = color == :white ? WHITE_DIRECTION : BLACK_DIRECTION
-  end
-
-  def pawn_moves(position)
-    if on_starting_row?(position)
-      MOVES[:initial].map { |dx, dy| [dx * @direction, dy] }
-    else
-      MOVES[:regular].map { |dx, dy| [dx * @direction, dy] }
-    end
-  end
-
-  def pawn_captures
-    MOVES[:captures].map { |dx, dy| [dx * @direction, dy] }
-  end
-
-  def on_starting_row?(position)
-    (color == :white && position[0] == 1) || (color == :black && position[0] == 6)
   end
 
   def find_moves(position)
-    regular_moves(position) + capture_moves(position)
+    pawn_moves(position)
   end
 
-  def regular_moves(position)
-    x, y = position
-    moves = []
-
-    pawn_moves(position).each do |(dx, dy)|
-      new_x = x + dx
-      new_y = y + dy
-      moves << [new_x, new_y] if Board.on_board?(new_x, new_y) # && @board.empty?(new_x, new_y)
-    end
-
-    moves
+  def direction
+    @color == :white ? WHITE_DIRECTION : BLACK_DIRECTION
   end
 
-  def capture_moves(position)
+  private
+
+  def pawn_moves(position)
     x, y = position
-    moves = []
+    moves = [
+      [x + direction, y],       # Single forward move
+      [x + (2 * direction), y], # Double forward move (first move only)
+      [x + direction, y + 1],   # Capture diagonally right
+      [x + direction, y - 1]    # Capture diagonally left
+    ]
+    on_board_moves(moves)
+  end
 
-    pawn_captures.each do |(dx, dy)|
-      new_x = x + dx
-      new_y = y + dy
-      moves << [new_x, new_y] if Board.on_board?(new_x, new_y) # && @board.enemy_piece?(new_x, new_y, color)
-    end
-
-    moves
+  def on_board_moves(moves)
+    moves.select { |move| Board.on_board?(move[0], move[1]) }
   end
 end

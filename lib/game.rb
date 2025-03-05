@@ -6,18 +6,17 @@ class Game
     @board = Board.new
     @board.setup
     @board_rules = BoardRules.new(@board)
-    @current_player = 'white'
+    @current_player = :white
   end
 
   def switch_player
-    @current_player = @current_player == 'white' ? 'black' : 'white'
+    @current_player = @current_player == :white ? :black : :white
   end
 
   def play
     puts 'Welcome to Chess!'
 
     @board.print_board
-    @board.print_debug_board
 
     puts 'White to move.'
 
@@ -49,7 +48,6 @@ class Game
       end
 
       valid_moves = @board_rules.valid_moves(piece)
-      puts "Valid moves: #{valid_moves.inspect}"
 
       if valid_moves.include?(to)
         @board.move_piece(piece, to)
@@ -58,9 +56,17 @@ class Game
         switch_player
       else
         puts 'Invalid move. Try again.'
+        puts "The only valid moves are #{valid_moves.map { |move| to_human_position(move) }.join(', ')}"
       end
     end
     puts 'Thanks for playing!'
+  end
+
+  def to_human_position(position)
+    x, y = position
+    x = (8 - x).to_s
+    y = (y + 'a'.ord).chr
+    y + x
   end
 
   private

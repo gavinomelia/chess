@@ -20,16 +20,16 @@ RSpec.describe Pawn do
   describe '#find_moves' do
     context 'when pawns are on their starting positions' do
       before do
-        board.place_piece(white_pawn, [1, 0])
-        board.place_piece(black_pawn, [6, 0])
-      end
-
-      it 'returns possible moves for a white pawn' do
-        expect(white_pawn.find_moves([1, 0])).to contain_exactly([2, 0], [3, 0], [2, 1])
+        board.place_piece(black_pawn, [1, 0])
+        board.place_piece(white_pawn, [6, 0])
       end
 
       it 'returns possible moves for a black pawn' do
-        expect(black_pawn.find_moves([6, 0])).to contain_exactly([5, 0], [4, 0], [5, 1])
+        expect(black_pawn.find_moves([1, 0])).to contain_exactly([2, 0], [3, 0], [2, 1])
+      end
+
+      it 'returns possible moves for a white pawn' do
+        expect(white_pawn.find_moves([6, 0])).to contain_exactly([5, 0], [4, 0], [5, 1])
       end
     end
 
@@ -39,12 +39,12 @@ RSpec.describe Pawn do
         board.place_piece(black_pawn, [5, 0])
       end
 
-      it 'returns all possible moves for a white pawn' do
-        expect(white_pawn.find_moves([2, 0])).to contain_exactly([3, 0], [3, 1])
+      it 'returns all possible moves for a black pawn' do
+        expect(black_pawn.find_moves([2, 0])).to contain_exactly([3, 0], [3, 1], [4, 0])
       end
 
-      it 'returns all possible moves for a black pawn' do
-        expect(black_pawn.find_moves([5, 0])).to contain_exactly([4, 0], [4, 1])
+      it 'returns all possible moves for a white pawn' do
+        expect(white_pawn.find_moves([5, 0])).to contain_exactly([4, 0], [4, 1], [3, 0])
       end
     end
   end
