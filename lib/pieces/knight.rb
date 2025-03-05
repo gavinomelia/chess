@@ -1,5 +1,3 @@
-require_relative '../piece'
-
 class Knight < Piece
   KNIGHT_MOVES = [
     [2, 1], [2, -1], [-2, 1], [-2, -1],

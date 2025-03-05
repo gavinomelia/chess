@@ -1,50 +1,10 @@
 require_relative 'piece'
-require_relative 'pieces/king'
-require_relative 'pieces/queen'
-require_relative 'pieces/rook'
-require_relative 'pieces/bishop'
-require_relative 'pieces/knight'
-require_relative 'pieces/pawn'
 
 class Board
   attr_accessor :grid
 
   def initialize
     @grid = Array.new(8) { Array.new(8, nil) }
-  end
-
-  def setup
-    # Place pawns
-    (0..7).each do |i|
-      place_piece(Piece.for_type(:pawn, :white), [6, i])
-      place_piece(Piece.for_type(:pawn, :black), [1, i])
-    end
-
-    # Place rooks
-    [[0, 0], [0, 7], [7, 0], [7, 7]].each do |pos|
-      color = pos[0].zero? ? :black : :white
-      place_piece(Piece.for_type(:rook, color), pos)
-    end
-
-    # Place knights
-    [[0, 1], [0, 6], [7, 1], [7, 6]].each do |pos|
-      color = pos[0].zero? ? :black : :white
-      place_piece(Piece.for_type(:knight, color), pos)
-    end
-
-    # Place bishops
-    [[0, 2], [0, 5], [7, 2], [7, 5]].each do |pos|
-      color = pos[0].zero? ? :black : :white
-      place_piece(Piece.for_type(:bishop, color), pos)
-    end
-
-    # Place queens
-    place_piece(Piece.for_type(:queen, :black), [0, 3])
-    place_piece(Piece.for_type(:queen, :white), [7, 3])
-
-    # Place kings
-    place_piece(Piece.for_type(:king, :black), [0, 4])
-    place_piece(Piece.for_type(:king, :white), [7, 4])
   end
 
   def piece_at?(x, y)

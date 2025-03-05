@@ -8,26 +8,27 @@ class Piece
   end
 
   def self.for_type(type, color)
+    class_name = type.to_s.capitalize
     begin
-      const_get(type.capitalize.to_s)
+      const_get(class_name).new(color)
     rescue NameError
       raise ArgumentError, "Unknown piece type: #{type}"
-    end.new(color)
+    end
   end
 
   def unicode_piece(piece)
-    case piece
-    when King
+    case piece.type
+    when :king
       piece.color == :white ? "\u265A" : "\u2654"
-    when Queen
+    when :queen
       piece.color == :white ? "\u265B" : "\u2655"
-    when Rook
+    when :rook
       piece.color == :white ? "\u265C" : "\u2656"
-    when Bishop
+    when :bishop
       piece.color == :white ? "\u265D" : "\u2657"
-    when Knight
+    when :knight
       piece.color == :white ? "\u265E" : "\u2658"
-    when Pawn
+    when :pawn
       piece.color == :white ? "\u265F" : "\u2659"
     else
       '?'

@@ -1,5 +1,3 @@
-require_relative '../piece'
-
 class Queen < Piece
   def initialize(color)
     super(:queen, color)
