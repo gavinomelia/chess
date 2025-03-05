@@ -79,12 +79,12 @@ class Board
     @grid[x][y] = piece
   end
 
-  def enemy_piece?(x, y, color)
-    !empty?(x, y) && @grid[x][y].color != color
+  def enemy_piece_at?(row, col, color)
+    !empty?(row, col) && !friendly_piece_at?(row, col, color)
   end
 
-  def friendly_piece?(x, y, color)
-    !empty?(x, y) && !enemy_piece?(x, y, color)
+  def friendly_piece_at?(row, col, color)
+    !empty?(row, col) && @grid[row][col].color == color
   end
 
   def find_piece(piece)

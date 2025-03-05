@@ -45,12 +45,12 @@ class BoardRules
       current_y += y_step
     end
 
-    @board.empty?(x2, y2) || board.enemy_piece?(x2, y2, color)
+    @board.empty?(x2, y2) || @board.enemy_piece_at?(x2, y2, color)
   end
 
   def takes_friendly_piece?(piece, new_position)
     x, y = new_position
-    @board.friendly_piece?(x, y, piece.color)
+    @board.friendly_piece_at?(x, y, piece.color)
   end
 
   def filter_moves(piece, moves)
@@ -85,7 +85,7 @@ class BoardRules
     direction = pawn.direction
 
     return true if dx == direction && dy.zero? && @board.empty?(x, y)
-    return true if dx == direction && dy.abs == 1 && @board.enemy_piece?(x, y, pawn.color)
+    return true if dx == direction && dy.abs == 1 && @board.enemy_piece_at?(x, y, pawn.color)
     return true if on_starting_row?(pawn.color,
                                     previous_position) && dx == 2 * direction && dy.zero? && @board.empty?(x, y)
 
