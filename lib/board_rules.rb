@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 require_relative 'board'
 
+# This class is responsible for determining the valid moves for a piece and whether a move is legal.
+# It uses piece-specific methods to determine a piece's possible moves and then filters them based on the board state.
 class BoardRules
   attr_reader :board
 
@@ -16,16 +20,12 @@ class BoardRules
   def legal_move?(piece, new_position)
     x, y = new_position
     previous_position = @board.find_piece(piece)
-    return false unless on_board?(x, y)
+    return false unless Board.on_board?(x, y)
     return false if takes_friendly_piece?(piece, new_position)
     return false unless path_clear?(previous_position, new_position, piece.color) || piece.is_a?(Knight)
     return false unless valid_piece_move?(piece, previous_position, new_position)
 
     true
-  end
-
-  def on_board?(x, y)
-    x.between?(0, 7) && y.between?(0, 7)
   end
 
   def path_clear?(start_pos, end_pos, color)

@@ -14,7 +14,7 @@ class Bishop < Piece
 
       new_positions = [[x + i, y + i], [x + i, y - i]]
       new_positions.each do |new_x, new_y|
-        moves << [new_x, new_y] if new_x.between?(0, 7) && new_y.between?(0, 7)
+        moves << [new_x, new_y] if Board.on_board?(new_x, new_y)
       end
     end
 
