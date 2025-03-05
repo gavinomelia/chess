@@ -29,6 +29,14 @@ class Board
     x.between?(0, 7) && y.between?(0, 7)
   end
 
+  def find_piece(piece)
+    @grid.each_with_index do |row, x|
+      y = row.find_index(piece)
+      return [x, y] if y
+    end
+    nil
+  end
+
   def move_piece(piece, new_position)
     current_position = find_piece(piece)
     return unless current_position
@@ -45,14 +53,6 @@ class Board
 
   def friendly_piece_at?(row, col, color)
     !empty?(row, col) && @grid[row][col].color == color
-  end
-
-  def find_piece(piece)
-    @grid.each_with_index do |row, x|
-      y = row.find_index(piece)
-      return [x, y] if y
-    end
-    nil
   end
 
   def print_debug_board
