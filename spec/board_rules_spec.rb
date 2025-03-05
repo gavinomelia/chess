@@ -212,4 +212,20 @@ RSpec.describe BoardRules do
         .to be false
     end
   end
+
+  describe '#move_into_check?' do
+    it 'returns false if a move does not put the king in check' do
+      board.place_piece(King.new(:white), [0, 0])
+      board.place_piece(Rook.new(:black), [0, 7])
+      expect(board_rules.move_into_check?([0, 0], [1, 0], :white))
+        .to be false
+    end
+
+    it 'returns true if a move puts the king into check' do
+      board.place_piece(King.new(:white), [0, 0])
+      board.place_piece(Rook.new(:black), [1, 7])
+      expect(board_rules.move_into_check?([0, 0], [1, 0], :white))
+        .to be true
+    end
+  end
 end

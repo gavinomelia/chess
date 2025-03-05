@@ -69,6 +69,13 @@ class BoardRules
     end
   end
 
+  def move_into_check?(old_position, new_position, color)
+    # Returns true if the move would result in that color being in check
+    @board.temporarily_move_piece(old_position, new_position) do
+      in_check?(color)
+    end
+  end
+
   private
 
   def valid_piece_move?(piece, previous_position, new_position)

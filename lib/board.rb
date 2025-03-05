@@ -55,6 +55,23 @@ class Board
     !empty?(row, col) && @grid[row][col].color == color
   end
 
+  def temporarily_move_piece(from_pos, to_pos)
+    piece = @grid[from_pos[0]][from_pos[1]]
+    captured_piece = @grid[to_pos[0]][to_pos[1]]
+
+    # Make the move
+    @grid[from_pos[0]][from_pos[1]] = nil
+    @grid[to_pos[0]][to_pos[1]] = piece
+
+    result = yield
+
+    # Restore the board
+    @grid[from_pos[0]][from_pos[1]] = piece
+    @grid[to_pos[0]][to_pos[1]] = captured_piece
+
+    result
+  end
+
   def find_king(color)
     @grid.flatten.find { |piece| piece.is_a?(King) && piece.color == color }
   end
