@@ -114,31 +114,10 @@ class Board
     @grid.each_with_index do |row, index|
       print "#{8 - index} "
       row.each do |square|
-        print square.nil? ? '. ' : "#{unicode_piece(square)} "
+        print square.nil? ? '. ' : "#{square.unicode} "
       end
       puts "#{8 - index}"
     end
     puts '  a b c d e f g h'
-  end
-
-  private
-
-  def unicode_piece(piece)
-    case piece
-    when King
-      piece.color == :white ? "\u265A" : "\u2654"
-    when Queen
-      piece.color == :white ? "\u265B" : "\u2655"
-    when Rook
-      piece.color == :white ? "\u265C" : "\u2656"
-    when Bishop
-      piece.color == :white ? "\u265D" : "\u2657"
-    when Knight
-      piece.color == :white ? "\u265E" : "\u2658"
-    when Pawn
-      piece.color == :white ? "\u265F" : "\u2659"
-    else
-      '?'
-    end
   end
 end
