@@ -17,6 +17,7 @@ class BoardRules
     x, y = new_position
     previous_position = @board.find_piece(piece)
     return false unless on_board?(x, y)
+    return false if takes_friendly_piece?(piece, new_position)
     return false unless path_clear?(previous_position, new_position, piece.color) || piece.is_a?(Knight)
     return false unless valid_piece_move?(piece, previous_position, new_position)
 
@@ -44,7 +45,12 @@ class BoardRules
       current_y += y_step
     end
 
-    !@board.friendly_piece?(x2, y2, color)
+    @board.empty?(x2, y2) || board.enemy_piece?(x2, y2, color)
+  end
+
+  def takes_friendly_piece?(piece, new_position)
+    x, y = new_position
+    @board.friendly_piece?(x, y, piece.color)
   end
 
   def filter_moves(piece, moves)
@@ -58,13 +64,15 @@ class BoardRules
     when Pawn
       valid_pawn_move?(piece, previous_position, new_position)
     when Rook
-      valid_rook_move?(piece, previous_position, new_position)
+      valid_rook_move?(previous_position, new_position)
     when Bishop
-      valid_bishop_move?(piece, previous_position, new_position)
+      valid_bishop_move?(previous_position, new_position)
     when Queen
-      valid_queen_move?(piece, previous_position, new_position)
+      valid_queen_move?(previous_position, new_position)
     when Knight
-      valid_knight_move?(piece, previous_position, new_position)
+      # There are currently no restrictions on knight moves that depend on board state besides
+      # taking a friendly piece which is already handled.
+      true
     else
       false
     end
@@ -92,7 +100,7 @@ class BoardRules
     (color == :white && position[0] == 6) || (color == :black && position[0] == 1)
   end
 
-  def valid_rook_move?(rook, previous_position, new_position)
+  def valid_rook_move?(previous_position, new_position)
     x, y = new_position
     dx = x - previous_position[0]
     dy = y - previous_position[1]
@@ -103,7 +111,7 @@ class BoardRules
     true
   end
 
-  def valid_bishop_move?(bishop, previous_position, new_position)
+  def valid_bishop_move?(previous_position, new_position)
     x, y = new_position
     dx = x - previous_position[0]
     dy = y - previous_position[1]
@@ -114,13 +122,8 @@ class BoardRules
     true
   end
 
-  def valid_queen_move?(queen, previous_position, new_position)
-    valid_bishop_move?(queen, previous_position,
-                       new_position) || valid_rook_move?(queen, previous_position, new_position)
-  end
-
-  def valid_knight_move?(knight, previous_position, new_position)
-    x, y = new_position
-    !@board.friendly_piece?(x, y, knight.color)
+  def valid_queen_move?(previous_position, new_position)
+    valid_bishop_move?(previous_position,
+                       new_position) || valid_rook_move?(previous_position, new_position)
   end
 end
