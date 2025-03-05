@@ -19,7 +19,7 @@ This project is a command-line implementation of the classic game of chess. It a
 ## Installation
 
 ```bash
-git clone https://github.com/your-username/chess.git
+git clone https://github.com/gavinomelia/chess
 cd chess
 ```
 
