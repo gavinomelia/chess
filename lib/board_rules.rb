@@ -57,6 +57,18 @@ class BoardRules
     moves.select { |move| legal_move?(piece, move) }
   end
 
+  def in_check?(color)
+    king = @board.find_king(color)
+    king_position = @board.find_piece(king)
+
+    @board.grid.flatten.any? do |piece|
+      next if piece.nil?
+      next if piece.color == color
+
+      piece.find_moves(@board.find_piece(piece)).include?(king_position)
+    end
+  end
+
   private
 
   def valid_piece_move?(piece, previous_position, new_position)

@@ -196,4 +196,20 @@ RSpec.describe BoardRules do
       end
     end
   end
+
+  describe '#in_check?' do
+    it 'returns true if the king is in check' do
+      board.place_piece(King.new(:white), [0, 0])
+      board.place_piece(Rook.new(:black), [0, 7])
+      expect(board_rules.in_check?(:white))
+        .to be true
+    end
+
+    it 'returns false if the king is not in check' do
+      board.place_piece(King.new(:white), [0, 0])
+      board.place_piece(Rook.new(:black), [1, 7])
+      expect(board_rules.in_check?(:white))
+        .to be false
+    end
+  end
 end

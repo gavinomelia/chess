@@ -55,6 +55,10 @@ class Board
     !empty?(row, col) && @grid[row][col].color == color
   end
 
+  def find_king(color)
+    @grid.flatten.find { |piece| piece.is_a?(King) && piece.color == color }
+  end
+
   def print_debug_board
     puts "\n"
     puts '  0 1 2 3 4 5 6 7'
@@ -63,7 +67,7 @@ class Board
       row.each do |square|
         print square.nil? ? '. ' : "#{square.class.to_s[0].upcase} "
       end
-      puts "#{index}"
+      puts index
     end
     puts '  0 1 2 3 4 5 6 7'
   end
@@ -76,7 +80,7 @@ class Board
       row.each do |square|
         print square.nil? ? '. ' : "#{square.unicode} "
       end
-      puts "#{8 - index}"
+      puts 8 - index
     end
     puts '  a b c d e f g h'
   end

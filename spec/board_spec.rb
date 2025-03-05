@@ -27,4 +27,11 @@ RSpec.describe Board do
       expect(board.grid[0][0]).to be_nil
     end
   end
+
+  describe '#find_king' do
+    it 'returns the position of the king' do
+      board.place_piece(King.new(:white), [0, 0])
+      expect(board.find_king(:white)).to be_a(King)
+    end
+  end
 end
