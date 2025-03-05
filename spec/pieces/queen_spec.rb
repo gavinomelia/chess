@@ -26,25 +26,5 @@ RSpec.describe Queen do
         [4, 5], [4, 6], [4, 7]
       )
     end
-    # context 'when a piece is obstructing the path of the queen' do
-    #   before do
-    #     board.place_piece(white_queen, [0, 0])
-    #     board.place_piece(Pawn.new(:white, board), [2, 2])
-    #     board.place_piece(Pawn.new(:black, board), [6, 6])
-    #   end
-    #   it 'returns possible moves for a white queen' do
-    #     contain_exactly(
-    #       [1, 1],
-    #       [5, 5],
-    #       [6, 6],
-    #       [1, 7], [2, 6], [3, 5],
-    #       [5, 3], [6, 2], [7, 1],
-    #       [0, 4], [1, 4], [2, 4], [3, 4],
-    #       [5, 4], [6, 4], [7, 4],
-    #       [4, 0], [4, 1], [4, 2], [4, 3],
-    #       [4, 5], [4, 6], [4, 7]
-    #     )
-    #   end
-    # end
   end
 end
