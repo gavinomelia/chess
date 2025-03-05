@@ -84,16 +84,12 @@ class BoardRules
     dy = y - previous_position[1]
     direction = pawn.direction
 
-    if dx == direction && dy.zero?
-      @board.empty?(x, y)
-    elsif dx == direction && dy.abs == 1
-      @board.enemy_piece?(x, y, pawn.color)
-    elsif on_starting_row?(pawn.color, previous_position) && dx == 2 * direction && dy.zero?
-      intermediate_x = previous_position[0] + direction
-      @board.empty?(x, y) && @board.empty?(intermediate_x, y)
-    else
-      false
-    end
+    return true if dx == direction && dy.zero? && @board.empty?(x, y)
+    return true if dx == direction && dy.abs == 1 && @board.enemy_piece?(x, y, pawn.color)
+    return true if on_starting_row?(pawn.color,
+                                    previous_position) && dx == 2 * direction && dy.zero? && @board.empty?(x, y)
+
+    false
   end
 
   def on_starting_row?(color, position)
