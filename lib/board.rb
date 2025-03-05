@@ -83,6 +83,10 @@ class Board
     !empty?(x, y) && @grid[x][y].color != color
   end
 
+  def friendly_piece?(x, y, color)
+    !empty?(x, y) && !enemy_piece?(x, y, color)
+  end
+
   def find_piece(piece)
     @grid.each_with_index do |row, x|
       y = row.find_index(piece)
