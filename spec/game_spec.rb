@@ -19,4 +19,22 @@ RSpec.describe Game do
       expect(game.send(:parse_input, 'a1 h8')).to eq([[7, 0], [0, 7]])
     end
   end
+
+  describe '#check_for_checkmate' do
+    it 'exits the program when checkmate is detected' do
+      allow(game.instance_variable_get(:@board_rules)).to receive(:checkmate?).and_return(true)
+      allow(game.instance_variable_get(:@board)).to receive(:print_board)
+      expect(game).to receive(:puts).with('Checkmate!')
+      expect(game).to receive(:puts).with('Black wins!')
+      expect(game).to receive(:exit)
+      game.check_for_checkmate(color: :white)
+    end
+
+    it 'does nothing when there is no checkmate' do
+      allow(game.instance_variable_get(:@board_rules)).to receive(:checkmate?).and_return(false)
+      expect(game).not_to receive(:puts).with('Checkmate!')
+      expect(game).not_to receive(:exit)
+      expect { game.check_for_checkmate }.not_to raise_error
+    end
+  end
 end

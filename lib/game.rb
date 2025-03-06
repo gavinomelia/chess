@@ -36,7 +36,7 @@ class Game
       end
 
       from, to = parse_input(input)
-      if from.nil? || to.nil?
+      unless from && to
         puts "Invalid input format. Please use format like 'e2 e4'."
         next
       end
@@ -61,20 +61,29 @@ class Game
       @board.move_piece(piece, to)
       puts 'Move successful!'
       switch_player
+      check_for_check
       check_for_checkmate
     end
     puts 'Thanks for playing!'
   end
 
+  def check_for_check
+    return unless @board_rules.in_check?(@current_player)
+
+    puts "#{@current_player.capitalize} is in check!"
+  end
+
   def check_for_checkmate(color: @current_player)
     return unless @board_rules.checkmate?(color)
 
-    other_color = color == :white ? 'Black' : 'White'
-
     @board.print_board
     puts 'Checkmate!'
-    puts "#{other_color} wins!"
+    puts "#{other_color.capitalize} wins!"
     exit
+  end
+
+  def other_color
+    @current_player == :white ? :black : :white
   end
 
   def prompt_for_input

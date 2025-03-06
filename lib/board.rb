@@ -68,16 +68,23 @@ class Board
     @grid[new_position[0]][new_position[1]] = original_piece
     @grid[old_position[0]][old_position[1]] = nil
 
-    # Yield the block to allow for the in_check? check.
-    yield
+    # Yield the block and capture its result
+    result = yield
 
     # Restore the board state.
     @grid[old_position[0]][old_position[1]] = original_piece
     @grid[new_position[0]][new_position[1]] = original_target
+
+    # Return the result from the block
+    result
   end
 
   def pieces_of_opposite_color(color)
     @grid.flatten.compact.select { |piece| piece.color != color }
+  end
+
+  def pieces_of_color(color)
+    @grid.flatten.compact.select { |piece| piece.color == color }
   end
 
   def find_king(color)

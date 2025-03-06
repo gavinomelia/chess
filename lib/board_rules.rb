@@ -76,15 +76,17 @@ class BoardRules
   def moves_into_check?(piece, new_position)
     old_position = @board.find_piece(piece)
     @board.temporarily_move_piece(old_position, new_position) do
-      return in_check?(piece.color)
+      in_check?(piece.color)
     end
   end
 
   def checkmate?(color)
     return false unless in_check?(color)
 
-    king = @board.find_king(color)
-    valid_moves(king).empty?
+    # Check if any piece of this color can make a move to get out of check
+    @board.pieces_of_color(color).all? do |piece|
+      valid_moves(piece).empty?
+    end
   end
 
   private
