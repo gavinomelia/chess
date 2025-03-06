@@ -24,13 +24,9 @@ class Game
   def play
     puts 'Welcome to Chess!'
 
-    @board.print_board
-
-    puts 'White to move.'
-
     loop do
-      puts "#{@current_player.capitalize}'s turn. Enter your move (e.g., e2 e4):"
-      input = gets.chomp
+      @board.print_board
+      input = prompt_for_input
 
       if input == 'exit'
         puts 'Exiting the game.'
@@ -55,19 +51,21 @@ class Game
         next
       end
 
-      valid_moves = @board_rules.valid_moves(piece)
-
-      if valid_moves.include?(to)
-        @board.move_piece(piece, to)
-        puts 'Move successful!'
-        @board.print_board
-        switch_player
-      else
+      unless @board_rules.legal_move?(piece, to)
         puts 'Invalid move. Try again.'
-        puts "The only valid moves are #{valid_moves.map { |move| to_human_position(move) }.join(', ')}"
+        next
       end
+
+      @board.move_piece(piece, to)
+      switch_player
+      puts 'Move successful!'
     end
     puts 'Thanks for playing!'
+  end
+
+  def prompt_for_input
+    puts "#{@current_player.capitalize}'s turn. Enter your move (e.g., e2 e4):"
+    gets.chomp
   end
 
   def to_human_position(position)
