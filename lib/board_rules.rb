@@ -80,6 +80,13 @@ class BoardRules
     end
   end
 
+  def checkmate?(color)
+    return false unless in_check?(color)
+
+    king = @board.find_king(color)
+    valid_moves(king).empty?
+  end
+
   private
 
   def valid_piece_move?(piece, previous_position, new_position)

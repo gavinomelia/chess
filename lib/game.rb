@@ -10,6 +10,8 @@ require_relative 'pieces/knight'
 require_relative 'pieces/pawn'
 
 class Game
+  attr_accessor :board
+
   def initialize
     @board = Board.new
     BoardSetup.new(@board).initial_piece_placement
@@ -57,10 +59,22 @@ class Game
       end
 
       @board.move_piece(piece, to)
-      switch_player
       puts 'Move successful!'
+      switch_player
+      check_for_checkmate
     end
     puts 'Thanks for playing!'
+  end
+
+  def check_for_checkmate(color: @current_player)
+    return unless @board_rules.checkmate?(color)
+
+    other_color = color == :white ? 'Black' : 'White'
+
+    @board.print_board
+    puts 'Checkmate!'
+    puts "#{other_color} wins!"
+    exit
   end
 
   def prompt_for_input

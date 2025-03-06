@@ -220,4 +220,14 @@ RSpec.describe BoardRules do
         .to be true
     end
   end
+
+  describe '#checkmate?' do
+    it 'returns true if the king is in checkmate' do
+      board.place_piece(King.new(:white), [0, 0])
+      board.place_piece(Rook.new(:black), [0, 7])
+      board.place_piece(Rook.new(:black), [1, 7])
+      expect(board_rules.checkmate?(:white))
+        .to be true
+    end
+  end
 end
