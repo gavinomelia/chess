@@ -89,33 +89,24 @@ class BoardRules
     end
   end
 
-  def able_to_castle_queenside?(color)
+  def able_to_castle?(direction, color)
     king = @board.find_king(color)
+    return false unless king
+
     king_position = @board.find_piece(king)
+    rook_column = direction == :queenside ? 0 : 7
+    rook = @board.grid[king_position[0]][rook_column]
 
-    rook = @board.grid[king_position[0]][0]
-
-    return false unless able_to_castle?(color, king, rook)
-
-    ((1...king_position[1]).all? { |y| @board.empty?(king_position[0], y) })
-  end
-
-  def able_to_castle_kingside?(color)
-    king = @board.find_king(color)
-    king_position = @board.find_piece(king)
-
-    rook = @board.grid[king_position[0]][7]
-
-    return false unless able_to_castle?(color, king, rook)
-
-    ((king_position[1] + 1...7).all? { |y| @board.empty?(king_position[0], y) })
-  end
-
-  def able_to_castle?(color, king, rook)
     return false if in_check?(color)
     return false if king.moved
     return false unless rook.is_a?(Rook) && !rook.moved
-    return false if moves_through_check?(color, @board.find_piece(king), @board.find_piece(rook))
+
+    # Check if path between king and rook is clear
+    range = direction == :queenside ? (1...king_position[1]) : (king_position[1] + 1...7)
+    return false unless range.all? { |y| @board.empty?(king_position[0], y) }
+
+    # Check if king would move through check
+    return false if moves_through_check?(color, king_position, [king_position[0], rook_column])
 
     true
   end

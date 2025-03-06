@@ -245,105 +245,107 @@ RSpec.describe BoardRules do
     end
   end
 
-  describe '#able_to_castle_kingside?' do
-    it 'returns true when conditions for kingside castling are met' do
-      board = Board.new
-      board_rules = BoardRules.new(board)
-      king = King.new(:white)
-      rook = Rook.new(:white)
+  describe '#able_to_castle?' do
+    context 'kingside' do
+      it 'returns true when conditions for kingside castling are met' do
+        board = Board.new
+        board_rules = BoardRules.new(board)
+        king = King.new(:white)
+        rook = Rook.new(:white)
 
-      king.moved = false
-      rook.moved = false
+        king.moved = false
+        rook.moved = false
 
-      board.place_piece(king, [7, 4]) # White king on e1
-      board.place_piece(rook, [7, 7]) # White rook on h1
+        board.place_piece(king, [7, 4]) # White king on e1
+        board.place_piece(rook, [7, 7]) # White rook on h1
 
-      expect(board_rules.able_to_castle_kingside?(:white)).to be true
-    end
+        expect(board_rules.able_to_castle?(:kingside, :white)).to be true
+      end
 
-    it 'returns false when king has already moved' do
-      board = Board.new
-      board_rules = BoardRules.new(board)
-      king = King.new(:white)
-      rook = Rook.new(:white)
+      it 'returns false when king has already moved' do
+        board = Board.new
+        board_rules = BoardRules.new(board)
+        king = King.new(:white)
+        rook = Rook.new(:white)
 
-      king.moved = true
-      rook.moved = false
+        king.moved = true
+        rook.moved = false
 
-      board.place_piece(king, [7, 4]) # White king on e1
-      board.place_piece(rook, [7, 7]) # White rook on h1
+        board.place_piece(king, [7, 4]) # White king on e1
+        board.place_piece(rook, [7, 7]) # White rook on h1
 
-      expect(board_rules.able_to_castle_kingside?(:white)).to be false
-    end
+        expect(board_rules.able_to_castle?(:kingside, :white)).to be false
+      end
 
-    it 'returns false when rook has already moved' do
-      board = Board.new
-      board_rules = BoardRules.new(board)
-      king = King.new(:white)
-      rook = Rook.new(:white)
+      it 'returns false when rook has already moved' do
+        board = Board.new
+        board_rules = BoardRules.new(board)
+        king = King.new(:white)
+        rook = Rook.new(:white)
 
-      king.moved = false
-      rook.moved = true
+        king.moved = false
+        rook.moved = true
 
-      board.place_piece(king, [7, 4]) # White king on e1
-      board.place_piece(rook, [7, 7]) # White rook on h1
+        board.place_piece(king, [7, 4]) # White king on e1
+        board.place_piece(rook, [7, 7]) # White rook on h1
 
-      expect(board_rules.able_to_castle_kingside?(:white)).to be false
-    end
+        expect(board_rules.able_to_castle?(:kingside, :white)).to be false
+      end
 
-    it 'returns false when path between king and rook is not clear' do
-      board = Board.new
-      board_rules = BoardRules.new(board)
-      king = King.new(:white)
-      rook = Rook.new(:white)
-      bishop = Bishop.new(:white)
+      it 'returns false when path between king and rook is not clear' do
+        board = Board.new
+        board_rules = BoardRules.new(board)
+        king = King.new(:white)
+        rook = Rook.new(:white)
+        bishop = Bishop.new(:white)
 
-      king.moved = false
-      rook.moved = false
+        king.moved = false
+        rook.moved = false
 
-      board.place_piece(king, [7, 4]) # White king on e1
-      board.place_piece(rook, [7, 7]) # White rook on h1
-      board.place_piece(bishop, [7, 5]) # White bishop on f1 (blocking path)
+        board.place_piece(king, [7, 4]) # White king on e1
+        board.place_piece(rook, [7, 7]) # White rook on h1
+        board.place_piece(bishop, [7, 5]) # White bishop on f1 (blocking path)
 
-      expect(board_rules.able_to_castle_kingside?(:white)).to be false
-    end
+        expect(board_rules.able_to_castle?(:kingside, :white)).to be false
+      end
 
-    it 'returns false when king is in check' do
-      board = Board.new
-      board_rules = BoardRules.new(board)
-      king = King.new(:white)
-      rook = Rook.new(:white)
-      enemy_rook = Rook.new(:black)
+      it 'returns false when king is in check' do
+        board = Board.new
+        board_rules = BoardRules.new(board)
+        king = King.new(:white)
+        rook = Rook.new(:white)
+        enemy_rook = Rook.new(:black)
 
-      king.moved = false
-      rook.moved = false
+        king.moved = false
+        rook.moved = false
 
-      board.place_piece(king, [7, 4]) # White king on e1
-      board.place_piece(rook, [7, 7]) # White rook on h1
-      board.place_piece(enemy_rook, [0, 4]) # Black rook checking the king
+        board.place_piece(king, [7, 4]) # White king on e1
+        board.place_piece(rook, [7, 7]) # White rook on h1
+        board.place_piece(enemy_rook, [0, 4]) # Black rook checking the king
 
-      expect(board_rules.able_to_castle_kingside?(:white)).to be false
-    end
+        expect(board_rules.able_to_castle?(:kingside, :white)).to be false
+      end
 
-    it 'returns false when king moves through check' do
-      board = Board.new
-      board_rules = BoardRules.new(board)
-      king = King.new(:white)
-      rook = Rook.new(:white)
-      enemy_rook = Rook.new(:black)
+      it 'returns false when king moves through check' do
+        board = Board.new
+        board_rules = BoardRules.new(board)
+        king = King.new(:white)
+        rook = Rook.new(:white)
+        enemy_rook = Rook.new(:black)
 
-      king.moved = false
-      rook.moved = false
+        king.moved = false
+        rook.moved = false
 
-      board.place_piece(king, [7, 4])
-      board.place_piece(rook, [7, 7])
-      board.place_piece(enemy_rook, [0, 5]) # Black rook checking the king
+        board.place_piece(king, [7, 4])
+        board.place_piece(rook, [7, 7])
+        board.place_piece(enemy_rook, [0, 5]) # Black rook checking the king
 
-      expect(board_rules.able_to_castle_kingside?(:white)).to be false
+        expect(board_rules.able_to_castle?(:kingside, :white)).to be false
+      end
     end
   end
 
-  describe '#able_to_castle_queenside?' do
+  context 'queenside' do
     it 'returns true when conditions for queenside castling are met' do
       board = Board.new
       board_rules = BoardRules.new(board)
@@ -356,7 +358,7 @@ RSpec.describe BoardRules do
       board.place_piece(king, [7, 4])
       board.place_piece(rook, [7, 0])
 
-      expect(board_rules.able_to_castle_queenside?(:white))
+      expect(board_rules.able_to_castle?(:queenside, :white))
         .to be true
     end
 
@@ -373,7 +375,7 @@ RSpec.describe BoardRules do
       board.place_piece(king, [7, 4])
       board.place_piece(rook, [7, 0])
 
-      expect(board_rules.able_to_castle_queenside?(:white))
+      expect(board_rules.able_to_castle?(:queenside, :white))
         .to be false
     end
   end

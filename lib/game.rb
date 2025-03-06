@@ -55,7 +55,7 @@ class Game
   end
 
   def queenside
-    if @board_rules.able_to_castle_queenside?(@current_player)
+    if @board_rules.able_to_castle?(:queenside, @current_player)
       execute_castle(@current_player, :queenside)
       true
     else
@@ -65,7 +65,7 @@ class Game
   end
 
   def kingside
-    if @board_rules.able_to_castle_kingside?(@current_player)
+    if @board_rules.able_to_castle?(:kingside, @current_player)
       execute_castle(@current_player, :kingside)
       true
     else
