@@ -91,24 +91,20 @@ class BoardRules
 
   def able_to_castle?(direction, color)
     king = @board.find_king(color)
-    return false unless king
-
     king_position = @board.find_piece(king)
-    rook_column = direction == :queenside ? 0 : 7
-    rook = @board.grid[king_position[0]][rook_column]
+    king_col, king_row = king_position
 
-    return false if in_check?(color)
-    return false if king.moved
-    return false unless rook.is_a?(Rook) && !rook.moved
+    rook_column = direction == :queenside ? 0 : 7
+    rook = @board.find_rook(color, rook_column)
+
+    return false if in_check?(color) || king.moved || rook.moved
 
     # Check if path between king and rook is clear
-    range = direction == :queenside ? (1...king_position[1]) : (king_position[1] + 1...7)
-    return false unless range.all? { |y| @board.empty?(king_position[0], y) }
+    range = direction == :queenside ? (1...king_row) : (king_row + 1...7)
+    return false unless range.all? { |y| @board.empty?(king_col, y) }
 
     # Check if king would move through check
-    return false if moves_through_check?(color, king_position, [king_position[0], rook_column])
-
-    true
+    !moves_through_check?(color, king_position, [king_col, rook_column])
   end
 
   def square_under_attack?(color, position)
