@@ -54,32 +54,21 @@ class Game
     true
   end
 
-  def queenside
-    if @board_rules.able_to_castle?(:queenside, @current_player)
-      execute_castle(@current_player, :queenside)
-      true
+  def castle(direction)
+    if @board_rules.able_to_castle?(direction, @current_player)
+      execute_castle(@current_player, direction)
     else
-      puts 'You cannot currently castle queenside.'
-      false
+      puts "You cannot currently castle #{direction}."
     end
-  end
-
-  def kingside
-    if @board_rules.able_to_castle?(:kingside, @current_player)
-      execute_castle(@current_player, :kingside)
-      true
-    else
-      puts 'You cannot currently castle kingside.'
-      false
-    end
+    false
   end
 
   def process_input(input)
     case input
     when 'o-o-o'
-      queenside
+      castle(:queenside)
     when 'o-o'
-      kingside
+      castle(:kingside)
     else
       validate_regular_input(input)
     end

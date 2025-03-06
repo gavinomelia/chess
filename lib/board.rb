@@ -60,23 +60,21 @@ class Board
   end
 
   def queenside_castle(color)
-    king = find_king(color)
-    king_position = find_piece(king)
-    rook = find_rook(color, 0)
-    rook_position = find_piece(rook)
-
-    move_piece(king, [king_position[0], king_position[1] - 2])
-    move_piece(rook, [rook_position[0], rook_position[1] + 3])
+    perform_castle(color, 0, -2, +3)
   end
 
   def kingside_castle(color)
+    perform_castle(color, 7, +2, -2)
+  end
+
+  def perform_castle(color, rook_column, king_move, rook_move)
     king = find_king(color)
     king_position = find_piece(king)
-    rook = find_rook(color, 7)
+    rook = find_rook(color, rook_column)
     rook_position = find_piece(rook)
 
-    move_piece(king, [king_position[0], king_position[1] + 2])
-    move_piece(rook, [rook_position[0], rook_position[1] - 2])
+    move_piece(king, [king_position[0], king_position[1] + king_move])
+    move_piece(rook, [rook_position[0], rook_position[1] + rook_move])
   end
 
   def enemy_piece_at?(row, col, color)
