@@ -82,7 +82,7 @@ RSpec.describe Game do
     it 'outputs message and exits when checkmate is detected' do
       allow(game.instance_variable_get(:@board_rules)).to receive(:checkmate?).and_return(true)
       allow(game).to receive(:puts)
-      allow(game.board).to receive(:print_board)
+      allow(game.board).to receive(:display)
       expect(game).to receive(:puts).with('Checkmate!')
       expect(game).to receive(:puts).with('Black wins!')
       expect(game).to receive(:exit)

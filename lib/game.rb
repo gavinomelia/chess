@@ -29,13 +29,12 @@ class Game
 
   def game_loop
     loop do
-      @board.print_board
+      @board.display
       input = prompt_for_input
 
       break if handle_exit(input)
-      next unless (valid_input = process_input(input))
 
-      from, to = valid_input
+      next unless (from, to = process_input(input))
       next unless (valid_piece = validate_piece_selection(from))
       next unless validate_move(valid_piece, to)
 
@@ -55,7 +54,38 @@ class Game
     true
   end
 
+  def queenside
+    if @board_rules.able_to_castle_queenside?(@current_player)
+      execute_castle(@current_player, :queenside)
+      true
+    else
+      puts 'You cannot currently castle queenside.'
+      false
+    end
+  end
+
+  def kingside
+    if @board_rules.able_to_castle_kingside?(@current_player)
+      execute_castle(@current_player, :kingside)
+      true
+    else
+      puts 'You cannot currently castle kingside.'
+      false
+    end
+  end
+
   def process_input(input)
+    case input
+    when 'o-o-o'
+      queenside
+    when 'o-o'
+      kingside
+    else
+      validate_regular_input(input)
+    end
+  end
+
+  def validate_regular_input(input)
     from, to = parse_input(input)
     unless from && to
       puts "Invalid input format. Please use format like 'e2 e4'."
@@ -87,6 +117,16 @@ class Game
     true
   end
 
+  def execute_castle(color, side)
+    if side == :queenside
+      @board.queenside_castle(color)
+    elsif side == :kingside
+      @board.kingside_castle(color)
+    end
+    switch_player
+    check_game_state
+  end
+
   def execute_move(piece, destination)
     @board.move_piece(piece, destination)
     switch_player
@@ -111,7 +151,6 @@ class Game
   def check_for_checkmate
     return unless @board_rules.checkmate?(@current_player)
 
-    @board.print_board
     puts 'Checkmate!'
     puts "#{other_color.capitalize} wins!"
     exit

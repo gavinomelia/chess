@@ -31,14 +31,6 @@ class Board
     x.between?(0, 7) && y.between?(0, 7)
   end
 
-  def find_piece(piece)
-    @grid.each_with_index do |row, x|
-      y = row.find_index(piece)
-      return [x, y] if y
-    end
-    nil
-  end
-
   def move_piece(piece, new_position)
     current_position = find_piece(piece)
     return unless current_position
@@ -49,6 +41,42 @@ class Board
     @grid[x][y] = nil
     x, y = new_position
     @grid[x][y] = piece
+  end
+
+  def find_piece(piece)
+    @grid.each_with_index do |row, x|
+      y = row.find_index(piece)
+      return [x, y] if y
+    end
+    nil
+  end
+
+  def find_king(color)
+    @grid.flatten.find { |piece| piece.is_a?(King) && piece.color == color }
+  end
+
+  def find_rook(color, y)
+    @grid.flatten.find { |piece| piece.is_a?(Rook) && piece.color == color && find_piece(piece)[1] == y }
+  end
+
+  def queenside_castle(color)
+    king = find_king(color)
+    king_position = find_piece(king)
+    rook = find_rook(color, 0)
+    rook_position = find_piece(rook)
+
+    move_piece(king, [king_position[0], king_position[1] - 2])
+    move_piece(rook, [rook_position[0], rook_position[1] + 3])
+  end
+
+  def kingside_castle(color)
+    king = find_king(color)
+    king_position = find_piece(king)
+    rook = find_rook(color, 7)
+    rook_position = find_piece(rook)
+
+    move_piece(king, [king_position[0], king_position[1] + 2])
+    move_piece(rook, [rook_position[0], rook_position[1] - 2])
   end
 
   def enemy_piece_at?(row, col, color)
@@ -89,11 +117,7 @@ class Board
     @grid.flatten.compact.select { |piece| piece.color == color }
   end
 
-  def find_king(color)
-    @grid.flatten.find { |piece| piece.is_a?(King) && piece.color == color }
-  end
-
-  def print_debug_board
+  def display_debug
     puts "\n"
     puts '  0 1 2 3 4 5 6 7'
     @grid.each_with_index do |row, index|
@@ -106,7 +130,7 @@ class Board
     puts '  0 1 2 3 4 5 6 7'
   end
 
-  def print_board
+  def display
     puts "\n"
     puts '  a b c d e f g h'
     @grid.each_with_index do |row, index|
