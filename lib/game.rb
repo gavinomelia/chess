@@ -19,51 +19,85 @@ class Game
     @current_player = :white
   end
 
-  def switch_player
-    @current_player = @current_player == :white ? :black : :white
-  end
-
   def play
     puts 'Welcome to Chess!'
+    game_loop
+    puts 'Thanks for playing!'
+  end
 
+  def game_loop
     loop do
       @board.print_board
       input = prompt_for_input
 
-      if input == 'exit'
-        puts 'Exiting the game.'
-        break
-      end
+      break if handle_exit(input)
+      next unless (valid_input = process_input(input))
 
-      from, to = parse_input(input)
-      unless from && to
-        puts "Invalid input format. Please use format like 'e2 e4'."
-        next
-      end
+      from, to = valid_input
+      next unless (valid_piece = validate_piece_selection(from))
+      next unless validate_move(valid_piece, to)
 
-      x, y = from
-      unless @board.piece_at?(x, y)
-        puts 'No piece at that position.'
-        next
-      end
-
-      piece = @board.grid[x][y]
-      if piece.color != @current_player
-        puts "That's not your piece."
-        next
-      end
-
-      unless @board_rules.legal_move?(piece, to)
-        puts 'Invalid move. Try again.'
-        next
-      end
-
-      @board.move_piece(piece, to)
-      switch_player
-      check_for_check
-      check_for_checkmate
+      execute_move(valid_piece, to)
     end
-    puts 'Thanks for playing!'
+  end
+
+  def prompt_for_input
+    puts "#{@current_player.capitalize}'s turn. Enter your move (e.g., e2 e4):"
+    gets.chomp
+  end
+
+  def handle_exit(input)
+    return false unless input == 'exit'
+
+    puts 'Exiting the game.'
+    true
+  end
+
+  def process_input(input)
+    from, to = parse_input(input)
+    unless from && to
+      puts "Invalid input format. Please use format like 'e2 e4'."
+      return nil
+    end
+    [from, to]
+  end
+
+  def validate_piece_selection(position)
+    x, y = position
+    piece = @board.grid[x][y]
+
+    if !@board.piece_at?(x, y)
+      puts 'No piece at that position.'
+      return nil
+    elsif piece.color != @current_player
+      puts "That's not your piece."
+      return nil
+    end
+
+    piece
+  end
+
+  def validate_move(piece, destination)
+    unless @board_rules.legal_move?(piece, destination)
+      puts 'Invalid move. Try again.'
+      return false
+    end
+    true
+  end
+
+  def execute_move(piece, destination)
+    @board.move_piece(piece, destination)
+    switch_player
+    check_game_state
+  end
+
+  def check_game_state
+    check_for_check
+    check_for_checkmate
+  end
+
+  def switch_player
+    @current_player = @current_player == :white ? :black : :white
   end
 
   def check_for_check
@@ -72,8 +106,8 @@ class Game
     puts "#{@current_player.capitalize} is in check!"
   end
 
-  def check_for_checkmate(color: @current_player)
-    return unless @board_rules.checkmate?(color)
+  def check_for_checkmate
+    return unless @board_rules.checkmate?(@current_player)
 
     @board.print_board
     puts 'Checkmate!'
@@ -83,11 +117,6 @@ class Game
 
   def other_color
     @current_player == :white ? :black : :white
-  end
-
-  def prompt_for_input
-    puts "#{@current_player.capitalize}'s turn. Enter your move (e.g., e2 e4):"
-    gets.chomp
   end
 
   def to_human_position(position)

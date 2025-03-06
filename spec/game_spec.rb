@@ -95,10 +95,5 @@ RSpec.describe Game do
       expect(game).not_to receive(:exit)
       game.check_for_checkmate
     end
-
-    it 'checks for checkmate with specified color' do
-      allow(game.instance_variable_get(:@board_rules)).to receive(:checkmate?).with(:black).and_return(false)
-      game.check_for_checkmate(color: :black)
-    end
   end
 end
