@@ -59,7 +59,6 @@ class Game
       end
 
       @board.move_piece(piece, to)
-      puts 'Move successful!'
       switch_player
       check_for_check
       check_for_checkmate
