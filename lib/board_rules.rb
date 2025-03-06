@@ -89,7 +89,65 @@ class BoardRules
     end
   end
 
+  def able_to_castle_queenside?(color)
+    king = @board.find_king(color)
+    king_position = @board.find_piece(king)
+
+    rook = @board.grid[king_position[0]][0]
+
+    return false unless able_to_castle?(color, king, rook)
+
+    ((1...king_position[1]).all? { |y| @board.empty?(king_position[0], y) })
+  end
+
+  def able_to_castle_kingside?(color)
+    king = @board.find_king(color)
+    king_position = @board.find_piece(king)
+
+    rook = @board.grid[king_position[0]][7]
+
+    return false unless able_to_castle?(color, king, rook)
+
+    ((king_position[1] + 1...7).all? { |y| @board.empty?(king_position[0], y) })
+  end
+
+  def able_to_castle?(color, king, rook)
+    return false if in_check?(color)
+    return false if king.moved
+    return false unless rook.is_a?(Rook) && !rook.moved
+    return false if moves_through_check?(color, @board.find_piece(king), @board.find_piece(rook))
+
+    true
+  end
+
+  def square_under_attack?(color, position)
+    @board.pieces_of_opposite_color(color).any? do |piece|
+      valid_moves(piece).include?(position)
+    end
+  end
+
   private
+
+  def moves_through_check?(color, start_pos, end_pos)
+    # Get direction vector
+    x_step = (end_pos[0] - start_pos[0]) <=> 0
+    y_step = (end_pos[1] - start_pos[1]) <=> 0
+
+    # Create path of positions to check (excluding start position)
+    path = []
+    current_x, current_y = start_pos
+
+    loop do
+      current_x += x_step
+      current_y += y_step
+
+      path << [current_x, current_y]
+      break if end_pos == [current_x, current_y]
+    end
+
+    # Check if any square in the path is under attack
+    path.any? { |pos| square_under_attack?(color, pos) }
+  end
 
   def valid_piece_move?(piece, previous_position, new_position)
     if piece.is_a?(Pawn)

@@ -21,6 +21,8 @@ class Game
 
   def play
     puts 'Welcome to Chess!'
+    puts 'To exit at any time, type "exit".'
+    puts 'To castle, type o-o for kingside or o-o-o for queenside.'
     game_loop
     puts 'Thanks for playing!'
   end

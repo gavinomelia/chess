@@ -1,6 +1,9 @@
 class Rook < Piece
+  attr_accessor :moved
+
   def initialize(color)
     super(:rook, color)
+    @moved = false
   end
 
   def find_moves(position)

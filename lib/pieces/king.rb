@@ -1,10 +1,13 @@
 class King < Piece
+  attr_accessor :moved
+
   MOVES = [
     [-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]
   ]
 
   def initialize(color)
     super(:king, color)
+    @moved = false
   end
 
   def find_moves(position)

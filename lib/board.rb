@@ -43,6 +43,8 @@ class Board
     current_position = find_piece(piece)
     return unless current_position
 
+    piece.moved = true if piece.is_a?(King) || piece.is_a?(Rook)
+
     x, y = current_position
     @grid[x][y] = nil
     x, y = new_position
