@@ -117,6 +117,12 @@ class Board
     @grid.flatten.compact.select { |piece| piece.color == color }
   end
 
+  def promote_pawn(piece, desired_piece)
+    x, y = find_piece(piece)
+    piece = Piece.for_type(desired_piece, piece.color)
+    @grid[x][y] = piece
+  end
+
   def display_debug
     puts "\n"
     puts '  0 1 2 3 4 5 6 7'

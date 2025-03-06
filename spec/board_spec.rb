@@ -77,4 +77,13 @@ RSpec.describe Board do
       expect(board.grid[7][5]).to be_a(Rook)
     end
   end
+
+  describe '#promote_pawn' do
+    it 'replaces a pawn with the a queen' do
+      pawn = Pawn.new(:white)
+      board.place_piece(pawn, [0, 0])
+      board.promote_pawn(pawn, :queen)
+      expect(board.grid[0][0]).to be_a(Queen)
+    end
+  end
 end
