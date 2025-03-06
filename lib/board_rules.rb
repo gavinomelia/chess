@@ -9,6 +9,7 @@ class BoardRules
 
   def initialize(board)
     @board = board
+    @skip_check_validation = false
   end
 
   def valid_moves(piece)
@@ -29,6 +30,7 @@ class BoardRules
     return false if takes_friendly_piece?(piece, new_position)
     return false unless path_clear?(previous_position, new_position, piece.color) || piece.is_a?(Knight)
     return false unless valid_piece_move?(piece, previous_position, new_position)
+    return false if !@skip_check_validation && moves_into_check?(piece, new_position)
 
     true
   end
@@ -56,6 +58,26 @@ class BoardRules
   def takes_friendly_piece?(piece, new_position)
     x, y = new_position
     @board.friendly_piece_at?(x, y, piece.color)
+  end
+
+  def in_check?(color)
+    king = @board.find_king(color)
+    return false unless king
+
+    king_position = @board.find_piece(king)
+    @skip_check_validation = true
+    result = @board.pieces_of_opposite_color(color).any? do |piece|
+      valid_moves(piece).include?(king_position)
+    end
+    @skip_check_validation = false
+    result
+  end
+
+  def moves_into_check?(piece, new_position)
+    old_position = @board.find_piece(piece)
+    @board.temporarily_move_piece(old_position, new_position) do
+      return in_check?(piece.color)
+    end
   end
 
   private

@@ -22,6 +22,8 @@ class Board
   end
 
   def empty?(x, y)
+    return unless Board.on_board?(x, y)
+
     @grid[x][y].nil?
   end
 
@@ -48,28 +50,34 @@ class Board
   end
 
   def enemy_piece_at?(row, col, color)
-    !empty?(row, col) && !friendly_piece_at?(row, col, color)
+    piece = @grid[row][col]
+    piece && piece.color != color
   end
 
   def friendly_piece_at?(row, col, color)
-    !empty?(row, col) && @grid[row][col].color == color
+    piece = @grid[row][col]
+    piece && piece.color == color
   end
 
-  def temporarily_move_piece(from_pos, to_pos)
-    piece = @grid[from_pos[0]][from_pos[1]]
-    captured_piece = @grid[to_pos[0]][to_pos[1]]
+  def temporarily_move_piece(old_position, new_position)
+    # Save the current state of the board.
+    original_piece = @grid[old_position[0]][old_position[1]]
+    original_target = @grid[new_position[0]][new_position[1]]
 
-    # Make the move
-    @grid[from_pos[0]][from_pos[1]] = nil
-    @grid[to_pos[0]][to_pos[1]] = piece
+    # Move the piece temporarily.
+    @grid[new_position[0]][new_position[1]] = original_piece
+    @grid[old_position[0]][old_position[1]] = nil
 
-    result = yield
+    # Yield the block to allow for the in_check? check.
+    yield
 
-    # Restore the board
-    @grid[from_pos[0]][from_pos[1]] = piece
-    @grid[to_pos[0]][to_pos[1]] = captured_piece
+    # Restore the board state.
+    @grid[old_position[0]][old_position[1]] = original_piece
+    @grid[new_position[0]][new_position[1]] = original_target
+  end
 
-    result
+  def pieces_of_opposite_color(color)
+    @grid.flatten.compact.select { |piece| piece.color != color }
   end
 
   def find_king(color)
@@ -82,7 +90,7 @@ class Board
     @grid.each_with_index do |row, index|
       print "#{index} "
       row.each do |square|
-        print square.nil? ? '. ' : "#{square.class.to_s[0].upcase} "
+        print square.nil? ? '. ' : "#{square.unicode} "
       end
       puts index
     end

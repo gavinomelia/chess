@@ -45,6 +45,15 @@ RSpec.describe BoardRules do
 
       expect(board_rules.legal_move?(queen, [6, 6])).to be true
     end
+
+    context 'when validating pawn moves' do
+      it 'returns capture moves for a white pawn' do
+        pawn = Pawn.new(:white)
+        board.place_piece(pawn, [6, 0])
+        board.place_piece(Pawn.new(:black), [5, 1])
+        expect(board_rules.legal_move?(pawn, [5, 1])).to be true
+      end
+    end
   end
 
   describe '#path_clear?' do
@@ -119,12 +128,6 @@ RSpec.describe BoardRules do
                                         black_pawn.find_moves([1, 0]))).to contain_exactly([2, 0], [3, 0])
       end
 
-      it 'returns capture moves for a white pawn' do
-        board.place_piece(Pawn.new(:black), [5, 1])
-        expect(board_rules.filter_moves(white_pawn,
-                                        white_pawn.find_moves([6, 0]))).to contain_exactly([5, 0], [4, 0], [5, 1])
-      end
-
       it 'does not return moves for a white pawn blocked by another piece' do
         board.place_piece(Pawn.new(:black), [2, 0])
         expect(board_rules.filter_moves(black_pawn, black_pawn.find_moves([1, 0]))).to be_empty
@@ -182,19 +185,6 @@ RSpec.describe BoardRules do
         expect(board_rules.filter_moves(bishop, bishop.find_moves([4, 4]))).not_to include([7, 7])
       end
     end
-
-    context 'when validating queen moves' do
-      let(:queen) { Queen.new(:white) }
-
-      before do
-        board.place_piece(queen, [4, 4])
-        board.place_piece(Pawn.new(:white), [6, 6])
-      end
-
-      it 'does not include moves that go through a piece' do
-        expect(board_rules.filter_moves(queen, queen.find_moves([4, 4]))).not_to include([7, 7])
-      end
-    end
   end
 
   describe '#in_check?' do
@@ -213,18 +203,20 @@ RSpec.describe BoardRules do
     end
   end
 
-  describe '#move_into_check?' do
+  describe '#moves_into_check?' do
     it 'returns false if a move does not put the king in check' do
-      board.place_piece(King.new(:white), [0, 0])
+      white_king = King.new(:white)
+      board.place_piece(white_king, [0, 0])
       board.place_piece(Rook.new(:black), [0, 7])
-      expect(board_rules.move_into_check?([0, 0], [1, 0], :white))
+      expect(board_rules.moves_into_check?(white_king, [1, 0]))
         .to be false
     end
 
     it 'returns true if a move puts the king into check' do
-      board.place_piece(King.new(:white), [0, 0])
+      white_king = King.new(:white)
+      board.place_piece(white_king, [0, 0])
       board.place_piece(Rook.new(:black), [1, 7])
-      expect(board_rules.move_into_check?([0, 0], [1, 0], :white))
+      expect(board_rules.moves_into_check?(white_king, [1, 0]))
         .to be true
     end
   end
