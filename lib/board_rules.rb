@@ -124,12 +124,11 @@ class BoardRules
     path = []
     current_x, current_y = start_pos
 
-    loop do
+    while end_pos != [current_x, current_y]
       current_x += x_step
       current_y += y_step
 
       path << [current_x, current_y]
-      break if end_pos == [current_x, current_y]
     end
 
     # Check if any square in the path is under attack
@@ -149,13 +148,25 @@ class BoardRules
     dx = x - previous_position[0]
     dy = y - previous_position[1]
     direction = pawn.direction
+    color = pawn.color
 
-    return true if dx == direction && dy.zero? && @board.empty?(x, y)
-    return true if dx == direction && dy.abs == 1 && @board.enemy_piece_at?(x, y, pawn.color)
-    return true if on_starting_row?(pawn.color,
-                                    previous_position) && dx == 2 * direction && dy.zero? && @board.empty?(x, y)
+    return true if valid_pawn_advance?(dx, dy, direction, x, y)
+    return true if valid_pawn_capture?(dx, dy, direction, x, y, color)
+    return true if valid_pawn_double_advance?(dx, dy, direction, previous_position, x, y, color)
 
     false
+  end
+
+  def valid_pawn_advance?(dx, dy, direction, x, y)
+    dx == direction && dy.zero? && @board.empty?(x, y)
+  end
+
+  def valid_pawn_capture?(dx, dy, direction, x, y, color)
+    dx == direction && dy.abs == 1 && @board.enemy_piece_at?(x, y, color)
+  end
+
+  def valid_pawn_double_advance?(dx, dy, direction, previous_position, x, y, color)
+    on_starting_row?(color, previous_position) && dx == 2 * direction && dy.zero? && @board.empty?(x, y)
   end
 
   def on_starting_row?(color, position)
