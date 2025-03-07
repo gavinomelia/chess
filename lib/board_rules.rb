@@ -23,10 +23,10 @@ class BoardRules
   end
 
   def legal_move?(piece, new_position)
-    x, y = new_position
+    row, col = new_position
     previous_position = @board.find_piece(piece)
 
-    return false unless Board.on_board?(x, y)
+    return false unless Board.on_board?(row, col)
     return false if takes_friendly_piece?(piece, new_position)
     return false unless path_clear?(previous_position, new_position, piece.color) || piece.is_a?(Knight)
     return false unless valid_piece_move?(piece, previous_position, new_position)
@@ -36,28 +36,28 @@ class BoardRules
   end
 
   def path_clear?(start_pos, end_pos, color)
-    start_x, start_y = start_pos
-    x2, y2 = end_pos
+    start_row, start_col = start_pos
+    end_row, end_col = end_pos
 
-    x_step = x2 <=> start_x
-    y_step = y2 <=> start_y
+    row_step = end_row <=> start_row
+    col_step = end_col <=> start_col
 
-    current_x = start_x + x_step
-    current_y = start_y + y_step
+    current_row = start_row + row_step
+    current_col = start_col + col_step
 
-    while [current_x, current_y] != [x2, y2]
-      return false unless @board.empty?(current_x, current_y)
+    while [current_row, current_col] != [end_row, end_col]
+      return false unless @board.empty?(current_row, current_col)
 
-      current_x += x_step
-      current_y += y_step
+      current_row += row_step
+      current_col += col_step
     end
 
-    @board.empty?(x2, y2) || @board.enemy_piece_at?(x2, y2, color)
+    @board.empty?(end_row, end_col) || @board.enemy_piece_at?(end_row, end_col, color)
   end
 
   def takes_friendly_piece?(piece, new_position)
-    x, y = new_position
-    @board.friendly_piece_at?(x, y, piece.color)
+    row, col = new_position
+    @board.friendly_piece_at?(row, col, piece.color)
   end
 
   def in_check?(color)
@@ -110,7 +110,7 @@ class BoardRules
 
     # Check if path between king and rook is clear
     range = direction == :queenside ? (1...king_row) : (king_row + 1...7)
-    return false unless range.all? { |y| @board.empty?(king_col, y) }
+    return false unless range.all? { |col| @board.empty?(king_col, col) }
 
     # Check if king would move through check
     !moves_through_check?(color, king_position, [king_col, rook_column])
@@ -149,18 +149,18 @@ class BoardRules
 
   def moves_through_check?(color, start_pos, end_pos)
     # Get direction vector
-    x_step = (end_pos[0] - start_pos[0]) <=> 0
-    y_step = (end_pos[1] - start_pos[1]) <=> 0
+    row_step = (end_pos[0] - start_pos[0]) <=> 0
+    col_step = (end_pos[1] - start_pos[1]) <=> 0
 
     # Create path of positions to check (excluding start position)
     path = []
-    current_x, current_y = start_pos
+    current_row, current_col = start_pos
 
-    while end_pos != [current_x, current_y]
-      current_x += x_step
-      current_y += y_step
+    while end_pos != [current_row, current_col]
+      current_row += row_step
+      current_col += col_step
 
-      path << [current_x, current_y]
+      path << [current_row, current_col]
     end
 
     # Check if any square in the path is under attack
@@ -190,18 +190,20 @@ class BoardRules
     false
   end
 
-  def valid_pawn_advance?(dx, dy, direction, x, y)
-    dx == direction && dy.zero? && @board.empty?(x, y)
+  def valid_pawn_advance?(change_in_row, change_in_col, direction, row, col)
+    change_in_row == direction && change_in_col.zero? && @board.empty?(row, col)
   end
 
-  def valid_pawn_capture?(pawn, dx, dy, direction, x, y, color)
+  def valid_pawn_capture?(pawn, change_in_row, change_in_col, direction, row, col, color)
     return true if valid_en_passant?(pawn)
 
-    dx == direction && dy.abs == 1 && @board.enemy_piece_at?(x, y, color)
+    change_in_row == direction && change_in_col.abs == 1 && @board.enemy_piece_at?(row, col, color)
   end
 
-  def valid_pawn_double_advance?(dx, dy, direction, previous_position, x, y, color)
-    on_starting_row?(color, previous_position) && dx == 2 * direction && dy.zero? && @board.empty?(x, y)
+  def valid_pawn_double_advance?(change_in_row, change_in_col, direction, previous_position, row, col, color)
+    on_starting_row?(color,
+                     previous_position) && change_in_row == 2 * direction && change_in_col.zero? && @board.empty?(row,
+                                                                                                                  col)
   end
 
   def on_starting_row?(color, position)
