@@ -11,12 +11,12 @@ class King < Piece
   end
 
   def find_moves(position)
-    x, y = position
+    col, row = position
     moves = []
 
     MOVES.each do |(dx, dy)|
-      new_x = x + dx
-      new_y = y + dy
+      new_x = col + dx
+      new_y = row + dy
       moves << [new_x, new_y] if Board.on_board?(new_x, new_y)
     end
 

@@ -20,12 +20,12 @@ class Pawn < Piece
   private
 
   def pawn_moves(position)
-    x, y = position
+    col, row = position
     moves = [
-      [x + direction, y],       # Single forward move
-      [x + (2 * direction), y], # Double forward move (first move only)
-      [x + direction, y + 1],   # Capture diagonally right
-      [x + direction, y - 1]    # Capture diagonally left
+      [col + direction, row],       # Single forward move
+      [col + (2 * direction), row], # Double forward move (first move only)
+      [col + direction, row + 1],   # Capture diagonally right
+      [col + direction, row - 1]    # Capture diagonally left
     ]
     on_board_moves(moves)
   end

@@ -106,10 +106,10 @@ class Game
   end
 
   def validate_piece_selection(position)
-    x, y = position
-    piece = @board.grid[x][y]
+    col, row = position
+    piece = @board.grid[col][row]
 
-    if !@board.piece_at?(x, y)
+    if !@board.piece_at?(col, row)
       puts 'No piece at that position.'
       return nil
     elsif piece.color != @current_player
@@ -190,10 +190,10 @@ class Game
   end
 
   def to_human_position(position)
-    x, y = position
-    x = (8 - x).to_s
-    y = (y + 'a'.ord).chr
-    y + x
+    col, row = position
+    col = (8 - col).to_s
+    row = (row + 'a'.ord).chr
+    row + col
   end
 
   def promote_pawn
@@ -214,9 +214,9 @@ class Game
     return nil unless move && move.length == 2
     return nil unless ('a'..'h').include?(move[0].downcase) && ('1'..'8').include?(move[1])
 
-    x = 8 - move[1].to_i
-    y = move[0].downcase.ord - 'a'.ord
-    [x, y]
+    col = 8 - move[1].to_i
+    row = move[0].downcase.ord - 'a'.ord
+    [col, row]
   end
 
   def parse_input(input)

@@ -23,10 +23,10 @@ class BoardRules
   end
 
   def legal_move?(piece, new_position)
-    x, y = new_position
+    col, row = new_position
     previous_position = @board.find_piece(piece)
 
-    return false unless Board.on_board?(x, y)
+    return false unless Board.on_board?(col, row)
     return false if takes_friendly_piece?(piece, new_position)
     return false unless path_clear?(previous_position, new_position, piece.color) || piece.is_a?(Knight)
     return false unless valid_piece_move?(piece, previous_position, new_position)
@@ -56,8 +56,8 @@ class BoardRules
   end
 
   def takes_friendly_piece?(piece, new_position)
-    x, y = new_position
-    @board.friendly_piece_at?(x, y, piece.color)
+    col, row = new_position
+    @board.friendly_piece_at?(col, row, piece.color)
   end
 
   def in_check?(color)
@@ -110,7 +110,7 @@ class BoardRules
 
     # Check if path between king and rook is clear
     range = direction == :queenside ? (1...king_row) : (king_row + 1...7)
-    return false unless range.all? { |y| @board.empty?(king_col, y) }
+    return false unless range.all? { |row| @board.empty?(king_col, row) }
 
     # Check if king would move through check
     !moves_through_check?(color, king_position, [king_col, rook_column])
@@ -190,18 +190,18 @@ class BoardRules
     false
   end
 
-  def valid_pawn_advance?(dx, dy, direction, x, y)
-    dx == direction && dy.zero? && @board.empty?(x, y)
+  def valid_pawn_advance?(dx, dy, direction, col, row)
+    dx == direction && dy.zero? && @board.empty?(col, row)
   end
 
-  def valid_pawn_capture?(pawn, dx, dy, direction, x, y, color)
+  def valid_pawn_capture?(pawn, dx, dy, direction, col, row, color)
     return true if valid_en_passant?(pawn)
 
-    dx == direction && dy.abs == 1 && @board.enemy_piece_at?(x, y, color)
+    dx == direction && dy.abs == 1 && @board.enemy_piece_at?(col, row, color)
   end
 
-  def valid_pawn_double_advance?(dx, dy, direction, previous_position, x, y, color)
-    on_starting_row?(color, previous_position) && dx == 2 * direction && dy.zero? && @board.empty?(x, y)
+  def valid_pawn_double_advance?(dx, dy, direction, previous_position, col, row, color)
+    on_starting_row?(color, previous_position) && dx == 2 * direction && dy.zero? && @board.empty?(col, row)
   end
 
   def on_starting_row?(color, position)
