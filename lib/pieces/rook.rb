@@ -11,13 +11,13 @@ class Rook < Piece
     moves = []
 
     # Horizontal moves
-    (0..7).each do |i|
-      moves << [row, i] unless i == col
+    (0..7).each do |offset|
+      moves << [row, offset] unless offset == col
     end
 
     # Vertical moves
-    (0..7).each do |i|
-      moves << [i, col] unless i == row
+    (0..7).each do |offset|
+      moves << [offset, col] unless offset == row
     end
 
     moves

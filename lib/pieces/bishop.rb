@@ -10,7 +10,7 @@ class Bishop < Piece
     (-7..7).each do |offset|
       next if offset.zero?
 
-      new_positions = [[row + i, col + i], [row + i, col - i]]
+      new_positions = [[row + offset, col + offset], [row + offset, col - offset]]
       new_positions.each do |new_x, new_y|
         moves << [new_x, new_y] if Board.on_board?(new_x, new_y)
       end

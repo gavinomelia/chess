@@ -17,9 +17,9 @@ class BoardSetup
   private
 
   def place_pawns
-    (0..7).each do |i|
-      @board.place_piece(Piece.for_type(:pawn, :white), [6, i])
-      @board.place_piece(Piece.for_type(:pawn, :black), [1, i])
+    (0..7).each do |offset|
+      @board.place_piece(Piece.for_type(:pawn, :white), [6, offset])
+      @board.place_piece(Piece.for_type(:pawn, :black), [1, offset])
     end
   end
 

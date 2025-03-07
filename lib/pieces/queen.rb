@@ -8,21 +8,21 @@ class Queen < Piece
     moves = []
 
     # Horizontal moves
-    (0..7).each do |i|
-      moves << [x, i] unless i == y
+    (0..7).each do |offset|
+      moves << [x, offset] unless offset == y
     end
 
     # Vertical moves
-    (0..7).each do |i|
-      moves << [i, y] unless i == x
+    (0..7).each do |offset|
+      moves << [offset, y] unless offset == x
     end
 
     # Diagonal moves
-    (-7..7).each do |i|
-      next if i.zero?
+    (-7..7).each do |offset|
+      next if offset.zero?
 
-      moves << [x + i, y + i] if Board.on_board?(x + i, y + i)
-      moves << [x + i, y - i] if Board.on_board?(x + i, y - i)
+      moves << [x + offset, y + offset] if Board.on_board?(x + offset, y + offset)
+      moves << [x + offset, y - offset] if Board.on_board?(x + offset, y - offset)
     end
 
     moves
