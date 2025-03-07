@@ -115,10 +115,18 @@ class Board
     @grid.flatten.compact.select { |piece| piece.color == color }
   end
 
-  def promote_pawn(piece, desired_piece)
-    x, y = find_piece(piece)
-    piece = Piece.for_type(desired_piece, piece.color)
+  def promote_pawn(pawn, desired_piece)
+    x, y = find_piece(pawn)
+    piece = Piece.for_type(desired_piece, pawn.color)
     @grid[x][y] = piece
+  end
+
+  def promotable_pawn
+    @grid.flatten.each do |piece|
+      location = find_piece(piece)
+      return piece if piece.is_a?(Pawn) && (location[0] == (piece.color == :white ? 0 : 7))
+    end
+    nil
   end
 
   def display_debug

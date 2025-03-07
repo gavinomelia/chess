@@ -123,6 +123,7 @@ class Game
   end
 
   def check_game_state
+    promote_pawn
     check_for_check
     check_for_checkmate
   end
@@ -154,6 +155,18 @@ class Game
     x = (8 - x).to_s
     y = (y + 'a'.ord).chr
     y + x
+  end
+
+  def promote_pawn
+    return unless (pawn = @board.promotable_pawn)
+
+    puts 'Choose a piece to promote your pawn to (queen, rook, bishop, knight):'
+    piece = gets.chomp.downcase
+    until %w[queen rook bishop knight].include?(piece)
+      puts 'Invalid piece. Choose queen, rook, bishop, or knight.'
+      piece = gets.chomp.downcase
+    end
+    @board.promote_pawn(pawn, piece.to_sym)
   end
 
   private
