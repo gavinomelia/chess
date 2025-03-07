@@ -8,11 +8,22 @@ require_relative 'pieces/rook'
 require_relative 'pieces/bishop'
 require_relative 'pieces/knight'
 require_relative 'pieces/pawn'
+require 'YAML'
 
 class Game
+  SAVE_FILE_PATH = 'saves/saved_game.yaml'.freeze
   attr_accessor :board
+  attr_reader :current_player
 
   def initialize
+    if File.exist?(SAVE_FILE_PATH)
+      load_game
+    else
+      start_new_game
+    end
+  end
+
+  def start_new_game
     @board = Board.new
     BoardSetup.new(@board).initial_piece_placement
     @board_rules = BoardRules.new(@board)
@@ -21,7 +32,7 @@ class Game
 
   def play
     puts 'Welcome to Chess!'
-    puts 'To exit at any time, type "exit".'
+    puts 'To exit at any time, type "exit". The game will be automatically saved.'
     puts 'To castle, type o-o for kingside or o-o-o for queenside.'
     game_loop
     puts 'Thanks for playing!'
@@ -50,7 +61,8 @@ class Game
   def handle_exit(input)
     return false unless input == 'exit'
 
-    puts 'Exiting the game.'
+    puts 'Saving and exiting the game.'
+    save_game
     true
   end
 
@@ -194,5 +206,20 @@ class Game
     from = parse_position(from_str)
     to = parse_position(to_str)
     [from, to]
+  end
+
+  def save_game
+    Dir.mkdir('saves') unless Dir.exist?('saves')
+    File.open(SAVE_FILE_PATH, 'w') do |file|
+      file.puts YAML.dump(self)
+    end
+  end
+
+  def load_game
+    saved_game = File.open(SAVE_FILE_PATH, 'r', &:read)
+    loaded_game = YAML.unsafe_load(saved_game)
+    @board = loaded_game.board
+    @current_player = loaded_game.current_player
+    @board_rules = BoardRules.new(@board)
   end
 end
