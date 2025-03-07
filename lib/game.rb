@@ -15,12 +15,22 @@ class Game
   attr_accessor :board
   attr_reader :current_player
 
-  def initialize
-    if File.exist?(SAVE_FILE_PATH)
-      load_game
+  def initialize(auto_start: true)
+    if saved_game_exists? && !auto_start
+      load_or_start_new_game
     else
       start_new_game
     end
+  end
+
+  def saved_game_exists?
+    File.exist?(SAVE_FILE_PATH)
+  end
+
+  def load_or_start_new_game
+    puts 'Saved game found. Would you like to load it? (yes/no)'
+    answer = gets.chomp.downcase
+    answer == 'yes' ? load_game : start_new_game
   end
 
   def start_new_game
