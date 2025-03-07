@@ -165,35 +165,30 @@ class BoardRules
     end
   end
 
-  def valid_pawn_move?(pawn, previous_position, new_position)
-    new_col, new_row = new_position
-    column_change = new_col - previous_position[0]
-    row_change = new_row - previous_position[1]
+  def valid_pawn_move?(pawn, from, to)
+    row_change = to[0] - from[0]
+    col_change = to[1] - from[1]
     direction = pawn.direction
-    color = pawn.color
 
-    return true if valid_pawn_advance?(column_change, row_change, direction, new_col, new_row)
-    return true if valid_pawn_capture?(pawn, column_change, row_change, direction, new_col, new_row, color)
-    return true if valid_pawn_double_advance?(column_change, row_change, direction, previous_position, new_col,
-                                              new_row, color)
+    return true if valid_pawn_advance?(row_change, col_change, direction, to)
+    return true if valid_pawn_capture?(pawn, row_change, col_change, direction, to)
+    return true if valid_pawn_double_advance?(row_change, col_change, direction, from, to, pawn.color)
 
     false
   end
 
-  def valid_pawn_advance?(change_in_row, change_in_col, direction, row, col)
-    change_in_row == direction && change_in_col.zero? && @board.empty?(row, col)
+  def valid_pawn_advance?(row_change, col_change, direction, to)
+    row_change == direction && col_change.zero? && @board.empty?(*to)
   end
 
-  def valid_pawn_capture?(pawn, change_in_row, change_in_col, direction, row, col, color)
+  def valid_pawn_capture?(pawn, row_change, col_change, direction, to)
     return true if valid_en_passant?(pawn)
 
-    change_in_row == direction && change_in_col.abs == 1 && @board.enemy_piece_at?(row, col, color)
+    row_change == direction && col_change.abs == 1 && @board.enemy_piece_at?(*to, pawn.color)
   end
 
-  def valid_pawn_double_advance?(change_in_row, change_in_col, direction, previous_position, row, col, color)
-    on_starting_row?(color,
-                     previous_position) && change_in_row == 2 * direction && change_in_col.zero? && @board.empty?(row,
-                                                                                                                  col)
+  def valid_pawn_double_advance?(row_change, col_change, direction, from, to, color)
+    on_starting_row?(color, from) && row_change == 2 * direction && col_change.zero? && @board.empty?(*to)
   end
 
   def on_starting_row?(color, position)
