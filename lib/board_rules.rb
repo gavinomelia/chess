@@ -125,7 +125,6 @@ class BoardRules
     last_piece = last_move[:piece]
     last_piece_previous_row, = last_move[:from]
     last_piece_current_row, last_piece_current_col = last_move[:to]
-
     current_piece_row, current_piece_col = @board.find_piece(pawn)
 
     return false unless last_piece.is_a?(Pawn) && last_piece.color != pawn.color
@@ -140,16 +139,16 @@ class BoardRules
 
   def moves_through_check?(color, start_pos, end_pos)
     # Get direction vector
-    row_step = (end_pos[0] - start_pos[0]) <=> 0
-    col_step = (end_pos[1] - start_pos[1]) <=> 0
+    row_direction = (end_pos[0] - start_pos[0]) <=> 0
+    col_direction = (end_pos[1] - start_pos[1]) <=> 0
 
     # Create path of positions to check (excluding start position)
     path = []
     current_row, current_col = start_pos
 
     while end_pos != [current_row, current_col]
-      current_row += row_step
-      current_col += col_step
+      current_row += row_direction
+      current_col += col_direction
 
       path << [current_row, current_col]
     end
