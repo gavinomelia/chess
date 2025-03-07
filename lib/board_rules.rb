@@ -119,24 +119,19 @@ class BoardRules
   end
 
   def valid_en_passant?(pawn)
-    # 1. The pawn being captured jumped two spaces as its last move
-    # 2. The capturing pawn is on the same row as the captured pawn
     last_move = @board.last_move
     return false unless last_move
 
     last_piece = last_move[:piece]
-    last_piece_previous_coordinates = last_move[:from]
-    last_piece_current_coordinates = last_move[:to]
+    last_piece_previous_row, = last_move[:from]
+    last_piece_current_row, last_piece_current_col = last_move[:to]
 
-    last_piece_previous_row, _last_piece_previous_col = last_piece_previous_coordinates
-    last_piece_current_row, _last_piece_current_col = last_piece_current_coordinates
-
-    current_piece_coordinates = @board.find_piece(pawn)
-    current_piece_row, _current_piece_col = current_piece_coordinates
+    current_piece_row, current_piece_col = @board.find_piece(pawn)
 
     return false unless last_piece.is_a?(Pawn) && last_piece.color != pawn.color
     return false unless (last_piece_previous_row - last_piece_current_row).abs == 2
     return false unless last_piece_current_row == current_piece_row
+    return false unless (last_piece_current_col - current_piece_col).abs == 1
 
     true
   end
