@@ -122,6 +122,29 @@ class BoardRules
     end
   end
 
+  def valid_en_passant?(pawn)
+    # 1. The pawn being captured jumped two spaces as its last move
+    # 2. The capturing pawn is on the same row as the captured pawn
+    last_move = @board.last_move
+    return false unless last_move
+
+    last_piece = last_move[:piece]
+    last_piece_previous_coordinates = last_move[:from]
+    last_piece_current_coordinates = last_move[:to]
+
+    last_piece_previous_row, _last_piece_previous_col = last_piece_previous_coordinates
+    last_piece_current_row, _last_piece_current_col = last_piece_current_coordinates
+
+    current_piece_coordinates = @board.find_piece(pawn)
+    current_piece_row, _current_piece_col = current_piece_coordinates
+
+    return false unless last_piece.is_a?(Pawn) && last_piece.color != pawn.color
+    return false unless (last_piece_previous_row - last_piece_current_row).abs == 2
+    return false unless last_piece_current_row == current_piece_row
+
+    true
+  end
+
   private
 
   def moves_through_check?(color, start_pos, end_pos)
@@ -153,15 +176,16 @@ class BoardRules
   end
 
   def valid_pawn_move?(pawn, previous_position, new_position)
-    x, y = new_position
-    dx = x - previous_position[0]
-    dy = y - previous_position[1]
+    new_col, new_row = new_position
+    column_change = new_col - previous_position[0]
+    row_change = new_row - previous_position[1]
     direction = pawn.direction
     color = pawn.color
 
-    return true if valid_pawn_advance?(dx, dy, direction, x, y)
-    return true if valid_pawn_capture?(dx, dy, direction, x, y, color)
-    return true if valid_pawn_double_advance?(dx, dy, direction, previous_position, x, y, color)
+    return true if valid_pawn_advance?(column_change, row_change, direction, new_col, new_row)
+    return true if valid_pawn_capture?(pawn, column_change, row_change, direction, new_col, new_row, color)
+    return true if valid_pawn_double_advance?(column_change, row_change, direction, previous_position, new_col,
+                                              new_row, color)
 
     false
   end
@@ -170,7 +194,9 @@ class BoardRules
     dx == direction && dy.zero? && @board.empty?(x, y)
   end
 
-  def valid_pawn_capture?(dx, dy, direction, x, y, color)
+  def valid_pawn_capture?(pawn, dx, dy, direction, x, y, color)
+    return true if valid_en_passant?(pawn)
+
     dx == direction && dy.abs == 1 && @board.enemy_piece_at?(x, y, color)
   end
 

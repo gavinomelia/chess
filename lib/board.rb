@@ -1,34 +1,35 @@
 require_relative 'piece'
 
 class Board
-  attr_accessor :grid
+  attr_accessor :grid, :last_move
 
   def initialize
     @grid = Array.new(8) { Array.new(8, nil) }
+    @last_move = nil
   end
 
-  def piece_at?(x, y)
-    !@grid[x][y].nil?
+  def piece_at?(col, row)
+    !@grid[col][row].nil?
   end
 
   def place_piece(piece, position)
     Piece.for_type(piece.type, piece.color)
-    x, y = position
-    @grid[x][y] = piece
+    col, row = position
+    @grid[col][row] = piece
   end
 
-  def remove_piece(x, y)
-    @grid[x][y] = nil
+  def remove_piece(col, row)
+    @grid[col][row] = nil
   end
 
-  def empty?(x, y)
-    return unless Board.on_board?(x, y)
+  def empty?(col, row)
+    return unless Board.on_board?(col, row)
 
-    @grid[x][y].nil?
+    @grid[col][row].nil?
   end
 
-  def self.on_board?(x, y)
-    x.between?(0, 7) && y.between?(0, 7)
+  def self.on_board?(col, row)
+    col.between?(0, 7) && row.between?(0, 7)
   end
 
   def move_piece(piece, new_position)
@@ -37,16 +38,18 @@ class Board
 
     piece.moved = true if piece.is_a?(King) || piece.is_a?(Rook)
 
-    x, y = current_position
-    @grid[x][y] = nil
-    x, y = new_position
-    @grid[x][y] = piece
+    col, row = current_position
+    @grid[col][row] = nil
+    col, row = new_position
+    @grid[col][row] = piece
+
+    @last_move = { piece: piece, from: current_position, to: new_position }
   end
 
   def find_piece(piece)
-    @grid.each_with_index do |row, x|
-      y = row.find_index(piece)
-      return [x, y] if y
+    @grid.each_with_index do |row, col|
+      row = row.find_index(piece)
+      return [col, row] if row
     end
     nil
   end
@@ -55,8 +58,8 @@ class Board
     @grid.flatten.find { |piece| piece.is_a?(King) && piece.color == color }
   end
 
-  def find_rook(color, y)
-    @grid.flatten.find { |piece| piece.is_a?(Rook) && piece.color == color && find_piece(piece)[1] == y }
+  def find_rook(color, row)
+    @grid.flatten.find { |piece| piece.is_a?(Rook) && piece.color == color && find_piece(piece)[1] == row }
   end
 
   def queenside_castle(color)
@@ -75,6 +78,12 @@ class Board
 
     move_piece(king, [king_position[0], king_position[1] + king_move])
     move_piece(rook, [rook_position[0], rook_position[1] + rook_move])
+  end
+
+  def execute_en_passant(pawn, destination)
+    col, row = destination
+    move_piece(pawn, destination)
+    remove_piece(col - pawn.direction, row)
   end
 
   def enemy_piece_at?(row, col, color)
@@ -116,9 +125,9 @@ class Board
   end
 
   def promote_pawn(pawn, desired_piece)
-    x, y = find_piece(pawn)
+    col, row = find_piece(pawn)
     piece = Piece.for_type(desired_piece, pawn.color)
-    @grid[x][y] = piece
+    @grid[col][row] = piece
   end
 
   def promotable_pawn

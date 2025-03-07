@@ -117,4 +117,22 @@ RSpec.describe Board do
       end
     end
   end
+
+  describe 'execute_en_passant' do
+    it 'removes the pawn that was taken en passant' do
+      board.place_piece(white_pawn, [3, 0])
+      board.place_piece(black_pawn, [1, 1])
+      board.move_piece(black_pawn, [3, 1])
+      board.execute_en_passant(white_pawn, [2, 1])
+      expect(board.grid[3][1]).to be nil
+    end
+
+    it 'moves the pawn to the correct position' do
+      board.place_piece(white_pawn, [3, 0])
+      board.place_piece(black_pawn, [1, 1])
+      board.move_piece(black_pawn, [3, 1])
+      board.execute_en_passant(white_pawn, [2, 1])
+      expect(board.grid[2][1]).to be_a(Pawn)
+    end
+  end
 end

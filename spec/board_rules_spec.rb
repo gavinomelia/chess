@@ -135,16 +135,6 @@ RSpec.describe BoardRules do
         filtered_moves = board_rules.filter_moves(white_pawn, white_pawn.find_moves([6, 0]))
         expect(filtered_moves).to include([4, 0])
       end
-
-      xit 'returns en passant move for a white pawn' do
-        board.place_piece(white_pawn, [4, 4])
-        board.place_piece(black_pawn, [4, 5])
-
-        # Simulate black pawn just moved two squares
-        board.record_double_step(black_pawn, [4, 5])
-
-        expect(board_rules.filter_moves(white_pawn, white_pawn.find_moves([4, 4]))).to include([5, 5])
-      end
     end
 
     context 'when validating rook moves' do
@@ -331,6 +321,42 @@ RSpec.describe BoardRules do
       board.place_piece(black_king, [7, 7])
       expect(board_rules.stalemate?(:white))
         .to be false
+    end
+  end
+
+  describe '#valid_en_passant?' do
+    context 'white pieces' do
+      it 'returns true if en passant is valid' do
+        board.place_piece(white_pawn, [3, 5])
+        board.place_piece(black_pawn, [1, 4])
+
+        board.move_piece(black_pawn, [3, 4])
+
+        expect(board_rules.valid_en_passant?(white_pawn))
+          .to be true
+      end
+
+      it 'returns false if en passant is not valid' do
+        board.place_piece(white_pawn, [2, 5])
+        board.place_piece(black_pawn, [1, 4])
+
+        board.move_piece(black_pawn, [2, 4])
+
+        expect(board_rules.valid_en_passant?(white_pawn))
+          .to be false
+      end
+    end
+
+    context 'black pieces' do
+      it 'returns true if en passant is valid' do
+        board.place_piece(white_pawn, [6, 5])
+        board.place_piece(black_pawn, [4, 4])
+
+        board.move_piece(white_pawn, [4, 5])
+
+        expect(board_rules.valid_en_passant?(black_pawn))
+          .to be true
+      end
     end
   end
 end

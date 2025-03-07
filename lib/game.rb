@@ -138,8 +138,16 @@ class Game
     check_game_state
   end
 
+  def en_passant_capture?(pawn, destination)
+    @board_rules.valid_en_passant?(pawn)
+  end
+
   def execute_move(piece, destination)
-    @board.move_piece(piece, destination)
+    if piece.is_a?(Pawn) && en_passant_capture?(piece, destination)
+      @board.execute_en_passant(piece, destination)
+    else
+      @board.move_piece(piece, destination)
+    end
     switch_player
     check_game_state
   end
