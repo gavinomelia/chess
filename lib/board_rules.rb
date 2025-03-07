@@ -36,29 +36,24 @@ class BoardRules
   end
 
   def path_clear?(start_pos, end_pos, color)
-    start_row, start_col = start_pos
-    end_row, end_col = end_pos
+    row_step = (end_pos[0] - start_pos[0]) <=> 0
+    col_step = (end_pos[1] - start_pos[1]) <=> 0
 
-    row_step = end_row <=> start_row
-    col_step = end_col <=> start_col
+    current_pos = [start_pos[0] + row_step, start_pos[1] + col_step]
 
-    current_row = start_row + row_step
-    current_col = start_col + col_step
+    while current_pos != end_pos
+      return false unless @board.empty?(*current_pos)
 
-    while [current_row, current_col] != [end_row, end_col]
-      return false unless @board.empty?(current_row, current_col)
-
-      current_row += row_step
-      current_col += col_step
+      current_pos[0] += row_step
+      current_pos[1] += col_step
     end
 
-    @board.empty?(end_row, end_col) || @board.enemy_piece_at?(end_row, end_col, color)
+    @board.empty?(*end_pos) || @board.enemy_piece_at?(*end_pos, color)
   end
 
   def takes_friendly_piece?(piece, new_position)
     row, col = new_position
     @board.friendly_piece_at?(row, col, piece.color)
-
   end
 
   def in_check?(color)
