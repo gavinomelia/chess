@@ -7,17 +7,17 @@ class Rook < Piece
   end
 
   def find_moves(position)
-    x, y = position
+    row, col = position
     moves = []
 
     # Horizontal moves
     (0..7).each do |i|
-      moves << [x, i] unless i == y
+      moves << [row, i] unless i == col
     end
 
     # Vertical moves
     (0..7).each do |i|
-      moves << [i, y] unless i == x
+      moves << [i, col] unless i == row
     end
 
     moves

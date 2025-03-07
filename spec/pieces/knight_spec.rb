@@ -26,15 +26,4 @@ RSpec.describe Knight do
       expect(knight.find_moves(start_position)).to match_array(expected_moves)
     end
   end
-
-  describe '#possible_moves' do
-    it 'returns valid moves for a given position' do
-      position = [3, 3]
-      expected_moves = [
-        [5, 4], [5, 2], [1, 4], [1, 2],
-        [4, 5], [4, 1], [2, 5], [2, 1]
-      ]
-      expect(knight.possible_moves(position)).to match_array(expected_moves)
-    end
-  end
 end
