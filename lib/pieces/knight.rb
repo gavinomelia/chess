@@ -14,6 +14,5 @@ class Knight < Piece
       new_row = row + change_in_row
       new_col = col + change_in_col
       moves << [new_row, new_col] if Board.on_board?(new_row, new_col)
-    end
   end
 end

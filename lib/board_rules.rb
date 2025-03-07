@@ -58,6 +58,7 @@ class BoardRules
   def takes_friendly_piece?(piece, new_position)
     row, col = new_position
     @board.friendly_piece_at?(row, col, piece.color)
+
   end
 
   def in_check?(color)
