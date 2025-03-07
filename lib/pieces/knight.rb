@@ -9,11 +9,10 @@ class Knight < Piece
   end
 
   def find_moves(position)
-    col, row = position
-    KNIGHT_MOVES.each_with_object([]) do |(dx, dy), moves|
-      new_col = col + dx
-      new_row = row + dy
-      moves << [new_col, new_row] if Board.on_board?(new_col, new_row)
-    end
+    row, col = position
+    KNIGHT_MOVES.each_with_object([]) do |(change_in_row, change_in_col), moves|
+      new_row = row + change_in_row
+      new_col = col + change_in_col
+      moves << [new_row, new_col] if Board.on_board?(new_row, new_col)
   end
 end

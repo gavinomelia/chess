@@ -25,8 +25,8 @@ RSpec.describe Rook do
 
       it 'returns possible moves for a white rook' do
         expect(white_rook.find_moves([4, 4])).to contain_exactly(
-          [0, 4], [1, 4], [2, 4], [3, 4], [5, 4], [6, 4], [7, 4], # X axis
-          [4, 0], [4, 1], [4, 2], [4, 3], [4, 5], [4, 6], [4, 7] # Y axis
+          [0, 4], [1, 4], [2, 4], [3, 4], [5, 4], [6, 4], [7, 4], # row axis
+          [4, 0], [4, 1], [4, 2], [4, 3], [4, 5], [4, 6], [4, 7] # col axis
         )
       end
     end
