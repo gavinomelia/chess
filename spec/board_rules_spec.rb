@@ -316,4 +316,21 @@ RSpec.describe BoardRules do
         .to be false
     end
   end
+
+  describe '#stalemate?' do
+    it 'returns true if the game is a stalemate' do
+      board.place_piece(white_king, [0, 0])
+      board.place_piece(black_rook, [1, 1])
+      board.place_piece(black_rook, [1, 2])
+      expect(board_rules.stalemate?(:white))
+        .to be true
+    end
+
+    it 'returns false if the game is not a stalemate' do
+      board.place_piece(white_king, [0, 0])
+      board.place_piece(black_king, [7, 7])
+      expect(board_rules.stalemate?(:white))
+        .to be false
+    end
+  end
 end

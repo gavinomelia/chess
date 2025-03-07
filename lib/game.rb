@@ -126,6 +126,7 @@ class Game
     promote_pawn
     check_for_check
     check_for_checkmate
+    check_for_stalemate
   end
 
   def switch_player
@@ -143,6 +144,14 @@ class Game
 
     puts 'Checkmate!'
     puts "#{other_color.capitalize} wins!"
+    exit
+  end
+
+  def check_for_stalemate
+    return unless @board_rules.stalemate?(@current_player)
+
+    puts 'Stalemate!'
+    puts 'The game is a draw.'
     exit
   end
 

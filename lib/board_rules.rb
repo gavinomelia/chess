@@ -89,6 +89,15 @@ class BoardRules
     end
   end
 
+  def stalemate?(color)
+    return false if in_check?(color)
+
+    # Check if any piece of this color can make a legal move
+    @board.pieces_of_color(color).all? do |piece|
+      valid_moves(piece).empty?
+    end
+  end
+
   def able_to_castle?(direction, color)
     king = @board.find_king(color)
     king_position = @board.find_piece(king)
