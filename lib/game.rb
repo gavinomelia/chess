@@ -76,15 +76,6 @@ class Game
     true
   end
 
-  def castle(direction)
-    if @board_rules.able_to_castle?(direction, @current_player)
-      execute_castle(@current_player, direction)
-    else
-      puts "You cannot currently castle #{direction}."
-    end
-    false
-  end
-
   def process_input(input)
     case input
     when 'o-o-o'
@@ -128,25 +119,30 @@ class Game
     true
   end
 
-  def execute_castle(color, side)
-    if side == :queenside
-      @board.queenside_castle(color)
-    elsif side == :kingside
-      @board.kingside_castle(color)
+  def execute_move(piece, destination)
+    if piece.is_a?(Pawn) && @board_rules.valid_en_passant?(piece)
+      @board.execute_en_passant(piece, destination)
+    else
+      @board.move_piece(piece, destination)
     end
     switch_player
     check_game_state
   end
 
-  def en_passant_capture?(pawn, destination)
-    @board_rules.valid_en_passant?(pawn)
+  def castle(direction)
+    if @board_rules.able_to_castle?(direction, @current_player)
+      execute_castle(@current_player, direction)
+    else
+      puts "You cannot currently castle #{direction}."
+    end
+    false
   end
 
-  def execute_move(piece, destination)
-    if piece.is_a?(Pawn) && en_passant_capture?(piece, destination)
-      @board.execute_en_passant(piece, destination)
-    else
-      @board.move_piece(piece, destination)
+  def execute_castle(color, side)
+    if side == :queenside
+      @board.queenside_castle(color)
+    elsif side == :kingside
+      @board.kingside_castle(color)
     end
     switch_player
     check_game_state
